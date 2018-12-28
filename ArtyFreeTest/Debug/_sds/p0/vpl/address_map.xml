@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xd:addressMap xmlns:xd="http://www.xilinx.com/xd">
+  <xd:addressRange xd:componentRef="processing_system7_0" xd:addressSpace="Data" xd:segment="SEG_axi_gpio_0_Reg" xd:slaveRef="axi_gpio_0" xd:slaveInterface="S_AXI" xd:slaveSegment="Reg" xd:baseAddr="0x41200000" xd:range="0x10000"/>
+  <xd:addressRange xd:componentRef="processing_system7_0" xd:addressSpace="Data" xd:segment="SEG_axi_gpio_1_Reg" xd:slaveRef="axi_gpio_1" xd:slaveInterface="S_AXI" xd:slaveSegment="Reg" xd:baseAddr="0x41210000" xd:range="0x10000"/>
+  <xd:addressRange xd:componentRef="processing_system7_0" xd:addressSpace="Data" xd:segment="SEG_axi_gpio_2_Reg" xd:slaveRef="axi_gpio_2" xd:slaveInterface="S_AXI" xd:slaveSegment="Reg" xd:baseAddr="0x41220000" xd:range="0x10000"/>
+  <xd:addressRange xd:componentRef="processing_system7_0" xd:addressSpace="Data" xd:segment="SEG_axi_gpio_3_Reg" xd:slaveRef="axi_gpio_3" xd:slaveInterface="S_AXI" xd:slaveSegment="Reg" xd:baseAddr="0x41230000" xd:range="0x10000"/>
+  <xd:addressRange xd:componentRef="processing_system7_0" xd:addressSpace="Data" xd:segment="SEG_axi_iic_0_Reg" xd:slaveRef="axi_iic_0" xd:slaveInterface="S_AXI" xd:slaveSegment="Reg" xd:baseAddr="0x41600000" xd:range="0x10000"/>
+</xd:addressMap>

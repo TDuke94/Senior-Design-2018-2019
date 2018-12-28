@@ -1,0 +1,329 @@
+(c) Copyright 2012-2018 Xilinx, Inc. All Rights Reserved.
+#-----------------------------------------------------------
+# Tool version  : sds++ 2018.2 SW Build 2258646 on Thu Jun 14 20:04:27 MDT 2018
+# Start time    : Fri Dec 14 14:38:09 -0500 2018
+# Command line  : sds++ --remote_ip_cache C:/Users/TimothyDuke/workspace/ip_cache -o ArtyFreeTest.elf ./src/dispatch.o ./src/main.o ./src/talky.o -dmclkid 11 -sds-sys-config FreeRTOS -sds-proc FreeRTOS -sds-pf {C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20}
+# Log file      : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds.log
+# Journal file  : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds.jou
+# Report file   : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds.rpt
+#-----------------------------------------------------------
+
+Removing implementation files from previous run
+Libraries: freertos
+Library Paths {}
+Searching for static library libfreertos.a
+Analyzing object files
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/dispatch.o.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/main.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/main.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/main.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/main.o.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/talky.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/talky.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/talky.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/talky.o.xml
+E:/SDSoC/SDx/2018.2/bin/build_xd_ip_db -ip_search 0  -sds-pf C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/.Xil/Arty_Z7_20.hpfm    -o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.cdb/xd_ip_db.xml  
+INFO: Using user-defined path for XILINX_XD environment variable E:/SDSoC/SDx/2018.2
+Generating data motion network
+E:/SDSoC/SDx/2018.2/bin/llvm-link -o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/sds_all.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/./src/dispatch.s C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/./src/main.s C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/./src/talky.s
+
+C:\Users\TimothyDuke\workspace\ArtyFreeTest\Debug>E:\SDSoC\SDx\2018.2\llvm-clang\win64\llvm\bin\llvm-link.exe -o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/sds_all.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/./src/dispatch.s C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/./src/main.s C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/./src/talky.s 
+
+C:\Users\TimothyDuke\workspace\ArtyFreeTest\Debug>exit /b 0 
+E:/SDSoC/SDx/2018.2/bin/XidanePass  --platform Arty_Z7_20  --dmclkid 11  --repo C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.cdb/xd_ip_db.xml  --dmdb E:/SDSoC/SDx/2018.2/data/DM.db   -os freertos -processor cortex-a9 -partition 0  
+
+C:\Users\TimothyDuke\workspace\ArtyFreeTest\Debug\_sds\.llvm>opt -disable-output -mem2reg -basicaa -XidanePass --platform Arty_Z7_20 --dmclkid 11 --repo C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.cdb/xd_ip_db.xml --dmdb E:/SDSoC/SDx/2018.2/data/DM.db -os freertos -processor cortex-a9 -partition 0  0<sds_all.o 
+INFO: [DMAnalysis 83-4494] Analyzing hardware accelerators...
+INFO: [DMAnalysis 83-4496] No hardware accelerators specified.
+Skipping block diagram (BD), address map, port information and device registration for partition 0
+Rewrite caller functions
+Prepare hardware access API functions
+Create accelerator stub functions
+Compile hardware access API functions
+arm-none-eabi-gcc   -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I E:/SDSoC/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I E:/SDSoC/Vivado/2018.2/include -c  C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.c
+arm-none-eabi-g++  -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I E:/SDSoC/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I E:/SDSoC/Vivado/2018.2/include -c  C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.c
+arm-none-eabi-ar crs C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/libxlnk_stub.a C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.o
+Compile accelerator stub functions
+arm-none-eabi-ar crs C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/libArtyFreeTest.a C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.o 
+Enable generation of hardware programming files
+Enable generation of boot files
+E:/SDSoC/SDx/2018.2/bin/cf2sw  -i C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/apsys_0.xml  -r C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.cdb/xd_ip_db.xml  -a address_map.xml  -pollMode 0 -mc
+INFO: [CF2SW 83-2203] Adding accelerator adapters...
+INFO: [CF2SW 83-2200] Adding axi_interconnects...
+INFO: [CF2SW 83-2201] Adding axi_stream_router for scatter-gather DMAs...
+INFO: [CF2SW 83-2202] Adding axi_dwidth_converters...
+INFO: [CF2SW 83-2208] Adding bus connections for logical connections...
+INFO: [CF2SW 83-2205] Adding clock connections...
+WARNING: [CF2SW 83-1006] Invalid clock id 1 for platform Arty_Z7_20
+INFO: [CF2SW 83-2206] Adding reset connections...
+Software tracing enabled
+Compile hardware access API functions
+arm-none-eabi-gcc   -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I E:/SDSoC/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I E:/SDSoC/Vivado/2018.2/include -c  C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.c
+arm-none-eabi-g++  -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I E:/SDSoC/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I E:/SDSoC/Vivado/2018.2/include -c  C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.c
+arm-none-eabi-ar crs C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/libxlnk_stub.a C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.o
+arm-none-eabi-ar crs C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/libArtyFreeTest.a C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.o 
+E:/SDSoC/SDK/2018.2/bin/hsi  -mode batch -notrace -quiet -source C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp/create_bsp.tcl
+CRITICAL WARNING: [Board 49-71] The board_part definition was not found for digilentinc.com:arty-z7-20:part0:1.0. The project's board_part property was not set, but the project's part property was set to xc7z020clg400-1. Valid board_part values can be retrieved with the 'get_board_parts' Tcl command. Check if board.repoPaths parameter is set and the board_part is installed from the tcl app store.
+INFO: [Hsi 55-1698] elapsed time for repository loading 1 seconds
+open_hw_design: Time (s): cpu = 00:00:06 ; elapsed = 00:00:09 . Memory (MB): peak = 174.102 ; gain = 118.387
+In start copy ps7_cortexa9
+INFO:[hsi-utils-101] "xprint_generated_header" tcl procedure is deprecated, use "hsi::utils::write_c_header " instead
+INFO:[hsi-utils-101] "xprint_generated_header" tcl procedure is deprecated, use "hsi::utils::write_c_header " instead
+generate_bsp: Time (s): cpu = 00:00:01 ; elapsed = 00:00:10 . Memory (MB): peak = 176.254 ; gain = 2.152
+Create board support package library
+E:/SDSoC/SDK/2018.2/bin/hsi  -mode batch -notrace -quiet -source C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp/create_bsp_post.tcl
+CRITICAL WARNING: [Board 49-71] The board_part definition was not found for digilentinc.com:arty-z7-20:part0:1.0. The project's board_part property was not set, but the project's part property was set to xc7z020clg400-1. Valid board_part values can be retrieved with the 'get_board_parts' Tcl command. Check if board.repoPaths parameter is set and the board_part is installed from the tcl app store.
+INFO: [Hsi 55-1698] elapsed time for repository loading 0 seconds
+open_hw_design: Time (s): cpu = 00:00:06 ; elapsed = 00:00:10 . Memory (MB): peak = 173.313 ; gain = 116.875
+WARNING : No interface that uses file system is available 
+
+In start copy ps7_cortexa9
+INFO:[hsi-utils-101] "xprint_generated_header" tcl procedure is deprecated, use "hsi::utils::write_c_header " instead
+INFO:[hsi-utils-101] "xprint_generated_header" tcl procedure is deprecated, use "hsi::utils::write_c_header " instead
+"Running Make include in ps7_cortexa9_0/libsrc/coresightps_dcc_v1_4/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/cpu_cortexa9_v2_6/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/ddrps_v1_0/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/devcfg_v3_5/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/dmaps_v2_3/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/freertos10_xilinx_v1_1/src"
+
+"include"
+
+"Running Make include in ps7_cortexa9_0/libsrc/gpio_v4_3/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/gpiops_v3_3/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/iic_v3_4/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/iicps_v3_7/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/qspips_v3_4/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/scugic_v3_9/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/scutimer_v2_1/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/scuwdt_v2_1/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/uartps_v3_6/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/xadcps_v2_2/src"
+
+"Running Make include in ps7_cortexa9_0/libsrc/xilffs_v3_7/src"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/coresightps_dcc_v1_4/src"
+
+"Compiling coresightps_dcc"
+
+arm-none-eabi-ar: creating ../../../lib/libxil.a
+
+"Running Make libs in ps7_cortexa9_0/libsrc/cpu_cortexa9_v2_6/src"
+
+"Compiling cpu_cortexa9"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/ddrps_v1_0/src"
+
+"Compiling ddrps"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/devcfg_v3_5/src"
+
+"Compiling devcfg"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/dmaps_v2_3/src"
+
+"Compiling dmaps"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/freertos10_xilinx_v1_1/src"
+
+"Compiling standalone"
+
+"Compiling FreeRTOS"
+
+arm-none-eabi-ar: creating ../../../lib/libfreertos.a
+
+"Running Make libs in ps7_cortexa9_0/libsrc/gpio_v4_3/src"
+
+"Compiling gpio"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/gpiops_v3_3/src"
+
+"Compiling gpiops"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/iic_v3_4/src"
+
+"Compiling iic"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/iicps_v3_7/src"
+
+"Compiling iicps"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/qspips_v3_4/src"
+
+"Compiling qspips"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/scugic_v3_9/src"
+
+"Compiling scugic"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/scutimer_v2_1/src"
+
+"Compiling scutimer"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/scuwdt_v2_1/src"
+
+"Compiling scuwdt"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/uartps_v3_6/src"
+
+"Compiling uartps"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/xadcps_v2_2/src"
+
+"Compiling xadcps"
+
+"Running Make libs in ps7_cortexa9_0/libsrc/xilffs_v3_7/src"
+
+"Compiling XilFFs Library"
+
+diskio.c: In function 'disk_status':
+
+diskio.c:166:6: warning: unused variable 'DelayCount' [-Wunused-variable]
+
+  u32 DelayCount = 0;
+
+      ^~~~~~~~~~
+
+diskio.c:165:6: warning: unused variable 'StatusReg' [-Wunused-variable]
+
+  u32 StatusReg;
+
+      ^~~~~~~~~
+
+diskio.c: In function 'disk_initialize':
+
+diskio.c:253:6: warning: unused variable 'Status' [-Wunused-variable]
+
+  s32 Status;
+
+      ^~~~~~
+
+diskio.c:249:8: warning: unused parameter 'pdrv' [-Wunused-parameter]
+
+   BYTE pdrv /* Physical drive number (0) */
+
+        ^~~~
+
+diskio.c: In function 'disk_read':
+
+diskio.c:346:8: warning: unused parameter 'pdrv' [-Wunused-parameter]
+
+   BYTE pdrv, /* Physical drive number (0) */
+
+        ^~~~
+
+diskio.c:347:9: warning: unused parameter 'buff' [-Wunused-parameter]
+
+   BYTE *buff, /* Pointer to the data buffer to store read data */
+
+         ^~~~
+
+diskio.c:348:9: warning: unused parameter 'sector' [-Wunused-parameter]
+
+   DWORD sector, /* Start sector number (LBA) */
+
+         ^~~~~~
+
+diskio.c:349:8: warning: unused parameter 'count' [-Wunused-parameter]
+
+   UINT count /* Sector count (1..128) */
+
+        ^~~~~
+
+diskio.c: In function 'disk_ioctl':
+
+diskio.c:385:7: warning: unused parameter 'pdrv' [-Wunused-parameter]
+
+  BYTE pdrv,    /* Physical drive number (0) */
+
+       ^~~~
+
+diskio.c:386:7: warning: unused parameter 'cmd' [-Wunused-parameter]
+
+  BYTE cmd,    /* Control code */
+
+       ^~~
+
+diskio.c:387:8: warning: unused parameter 'buff' [-Wunused-parameter]
+
+  void *buff    /* Buffer to send/receive control data */
+
+        ^~~~
+
+diskio.c: In function 'disk_write':
+
+diskio.c:475:8: warning: unused variable 'LocSector' [-Wunused-variable]
+
+  DWORD LocSector = sector;
+
+        ^~~~~~~~~
+
+diskio.c:474:6: warning: unused variable 'Status' [-Wunused-variable]
+
+  s32 Status;
+
+      ^~~~~~
+
+diskio.c:473:10: warning: unused variable 's' [-Wunused-variable]
+
+  DSTATUS s;
+
+          ^
+
+diskio.c:467:7: warning: unused parameter 'pdrv' [-Wunused-parameter]
+
+  BYTE pdrv,   /* Physical drive nmuber (0..) */
+
+       ^~~~
+
+diskio.c:468:14: warning: unused parameter 'buff' [-Wunused-parameter]
+
+  const BYTE *buff, /* Data to be written */
+
+              ^~~~
+
+diskio.c:470:7: warning: unused parameter 'count' [-Wunused-parameter]
+
+  UINT count   /* Number of sectors to write (1..128) */
+
+       ^~~~~
+
+At top level:
+
+diskio.c:135:11: warning: 'ExtCsd' defined but not used [-Wunused-variable]
+
+ static u8 ExtCsd[512] __attribute__ ((aligned(32)));
+
+           ^~~~~~
+
+diskio.c: In function 'disk_initialize':
+
+diskio.c:319:9: warning: 's' is used uninitialized in this function [-Wuninitialized]
+
+  return s;
+
+         ^
+
+'Finished building libraries'
+
+generate_bsp: Time (s): cpu = 00:00:01 ; elapsed = 00:01:44 . Memory (MB): peak = 175.691 ; gain = 2.379
+Link application ELF file
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,--build-id=none -specs=E:/SDSoC/SDx/2018.2/data/toolchain/aarch32-none.spec -Wl,-T -Wl,C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/lscript.ld   C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/main.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/talky.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o  -L C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp/ps7_cortexa9_0/lib  -L E:/SDSoC/SDx/2018.2/target/aarch32-none/lib -LC:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs -Wl,--start-group -lxilffs -lgcc -lc -lstdc++ -Wl,--end-group -Wl,--start-group   -lfreertos -lxilffs -lxil  -lgcc -lc  -lsds_lib -lxlnk_stub -lgcc -lc -Wl,--end-group -o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/ArtyFreeTest.elf
+arm-none-eabi-objcopy -R .xdinfo -R .xddata -R .xdasm -R .xdfcnmap -R .xdhlscore -R .xdif -R .xdparams -R .xdcore -R .xdrepo -R .xdsdata -R .xdpp C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/ArtyFreeTest.elf
+All user specified timing constraints are met.
+sds++ log file saved as C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds.log
+sds++ completed at Fri Dec 14 14:42:41 -0500 2018

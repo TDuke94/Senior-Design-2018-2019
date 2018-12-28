@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<xd:component xd:vendor="xilinx.com" xd:library="xd" xd:name="top" xd:version="1.00" xd:type="design" xmlns:xd="http://www.xilinx.com/xd">
+  <xd:repository>
+    <xd:file xd:name="xd_ip_db.xml"/>
+  </xd:repository>
+  <xd:instance xd:name="Arty_Z7_20" xd:componentRef="Arty_Z7_20"/>
+</xd:component>

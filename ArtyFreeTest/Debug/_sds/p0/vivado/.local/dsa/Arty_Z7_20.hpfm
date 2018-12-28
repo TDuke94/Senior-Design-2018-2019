@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!-- Arty_Z7_20.hpfm -->
+<xd:repository xmlns:xd="http://www.xilinx.com/xd" xd:name="Arty_Z7_20" xd:library="lib" xd:version="1.0" xd:vendor="vendor">
+  <xd:component xd:name="Arty_Z7_20" xd:library="lib" xd:version="1.0" xd:vendor="vendor" xd:type="platform" xd:BRAM="140" xd:DSP="220" xd:FF="106400" xd:LUT="53200">
+    <xd:platformInfo>
+      <xd:deviceInfo xd:name="xc7z020clg400-1" xd:architecture="zynq" xd:device="xc7z020" xd:package="clg400" xd:speedGrade="-1"/>
+      <xd:registeredDevices xd:kio="0" xd:uio="0"/>
+      <xd:description></xd:description>
+      <xd:systemClocks xd:defaultClock="11">
+        <xd:clock xd:name="CPU" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:frequency="650.000000" xd:period="1.538462" xd:status="reserved"/>
+        <xd:clock xd:name="clk_wiz_0_clk_out1" xd:instanceRef="clk_wiz_0" xd:componentRef="clk_wiz" xd:id="11" xd:frequency="100.000000" xd:period="10.000000" xd:normalizedPeriod="6.500000" xd:clkDomain="/clk_wiz_0_clk_out1" xd:status="changeable"/>
+      </xd:systemClocks>
+    </xd:platformInfo>
+    <xd:parameter xd:name="PCW_USE_M_AXI_GP0" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:isValid="count($designComponent/xd:connection/xd:busInterface[@xd:instanceRef=$instance and @xd:name='processing_system7_0_M_AXI_GP0'])>0" xd:value="1"/>
+    <xd:parameter xd:name="PCW_USE_M_AXI_GP1" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:isValid="count($designComponent/xd:connection/xd:busInterface[@xd:instanceRef=$instance and @xd:name='processing_system7_0_M_AXI_GP1'])>0" xd:value="1"/>
+    <xd:parameter xd:name="PCW_USE_S_AXI_ACP" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:isValid="count($designComponent/xd:connection/xd:busInterface[@xd:instanceRef=$instance and @xd:name='processing_system7_0_S_AXI_ACP'])>0" xd:value="1"/>
+    <xd:parameter xd:name="PCW_USE_DEFAULT_ACP_USER_VAL" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:isValid="count($designComponent/xd:connection/xd:busInterface[@xd:instanceRef=$instance and @xd:name='processing_system7_0_S_AXI_ACP'])>0" xd:value="1"/>
+    <xd:parameter xd:name="PCW_USE_S_AXI_HP0" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:isValid="count($designComponent/xd:connection/xd:busInterface[@xd:instanceRef=$instance and @xd:name='processing_system7_0_S_AXI_HP0'])>0" xd:value="1"/>
+    <xd:parameter xd:name="PCW_USE_S_AXI_HP1" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:isValid="count($designComponent/xd:connection/xd:busInterface[@xd:instanceRef=$instance and @xd:name='processing_system7_0_S_AXI_HP1'])>0" xd:value="1"/>
+    <xd:parameter xd:name="PCW_USE_S_AXI_HP2" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:isValid="count($designComponent/xd:connection/xd:busInterface[@xd:instanceRef=$instance and @xd:name='processing_system7_0_S_AXI_HP2'])>0" xd:value="1"/>
+    <xd:parameter xd:name="PCW_USE_S_AXI_HP3" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:isValid="count($designComponent/xd:connection/xd:busInterface[@xd:instanceRef=$instance and @xd:name='processing_system7_0_S_AXI_HP3'])>0" xd:value="1"/>
+    <xd:busInterface xd:busTypeRef="aximm" xd:name="processing_system7_0_M_AXI_GP0" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="master" xd:dataWidth="32" xd:clockRef="processing_system7_0_M_AXI_GP0_ACLK" xd:busInterfaceRef="M_AXI_GP0" xd:memport="M_AXI_GP" xd:sptag="default" xd:slr="default"/>
+    <xd:busInterface xd:busTypeRef="aximm" xd:name="processing_system7_0_M_AXI_GP1" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="master" xd:dataWidth="32" xd:clockRef="processing_system7_0_M_AXI_GP1_ACLK" xd:busInterfaceRef="M_AXI_GP1" xd:memport="M_AXI_GP" xd:sptag="default" xd:slr="default"/>
+    <xd:busInterface xd:busTypeRef="aximm" xd:name="processing_system7_0_S_AXI_ACP" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:dataWidth="32" xd:clockRef="processing_system7_0_S_AXI_ACP_ACLK" xd:busInterfaceRef="S_AXI_ACP" xd:memport="S_AXI_ACP" xd:sptag="default" xd:slr="default" xd:cacheCoherent="true"/>
+    <xd:busInterface xd:busTypeRef="aximm" xd:name="processing_system7_0_S_AXI_HP0" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:dataWidth="64" xd:clockRef="processing_system7_0_S_AXI_HP0_ACLK" xd:busInterfaceRef="S_AXI_HP0" xd:memport="S_AXI_HP" xd:sptag="default" xd:slr="default"/>
+    <xd:busInterface xd:busTypeRef="aximm" xd:name="processing_system7_0_S_AXI_HP1" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:dataWidth="64" xd:clockRef="processing_system7_0_S_AXI_HP1_ACLK" xd:busInterfaceRef="S_AXI_HP1" xd:memport="S_AXI_HP" xd:sptag="default" xd:slr="default"/>
+    <xd:busInterface xd:busTypeRef="aximm" xd:name="processing_system7_0_S_AXI_HP2" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:dataWidth="64" xd:clockRef="processing_system7_0_S_AXI_HP2_ACLK" xd:busInterfaceRef="S_AXI_HP2" xd:memport="S_AXI_HP" xd:sptag="default" xd:slr="default"/>
+    <xd:busInterface xd:busTypeRef="aximm" xd:name="processing_system7_0_S_AXI_HP3" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:dataWidth="64" xd:clockRef="processing_system7_0_S_AXI_HP3_ACLK" xd:busInterfaceRef="S_AXI_HP3" xd:memport="S_AXI_HP" xd:sptag="default" xd:slr="default"/>
+    <xd:busInterface xd:busTypeRef="clock" xd:name="clk_wiz_0_clk_out1" xd:instanceRef="clk_wiz_0" xd:componentRef="clk_wiz" xd:mode="master" xd:busInterfaceRef="clk_out1"/>
+    <xd:busInterface xd:busTypeRef="clock" xd:name="processing_system7_0_M_AXI_GP0_ACLK" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:busInterfaceRef="M_AXI_GP0_ACLK"/>
+    <xd:busInterface xd:busTypeRef="clock" xd:name="processing_system7_0_M_AXI_GP1_ACLK" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:busInterfaceRef="M_AXI_GP1_ACLK"/>
+    <xd:busInterface xd:busTypeRef="clock" xd:name="processing_system7_0_S_AXI_ACP_ACLK" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:busInterfaceRef="S_AXI_ACP_ACLK"/>
+    <xd:busInterface xd:busTypeRef="clock" xd:name="processing_system7_0_S_AXI_HP0_ACLK" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:busInterfaceRef="S_AXI_HP0_ACLK"/>
+    <xd:busInterface xd:busTypeRef="clock" xd:name="processing_system7_0_S_AXI_HP1_ACLK" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:busInterfaceRef="S_AXI_HP1_ACLK"/>
+    <xd:busInterface xd:busTypeRef="clock" xd:name="processing_system7_0_S_AXI_HP2_ACLK" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:busInterfaceRef="S_AXI_HP2_ACLK"/>
+    <xd:busInterface xd:busTypeRef="clock" xd:name="processing_system7_0_S_AXI_HP3_ACLK" xd:instanceRef="processing_system7_0" xd:componentRef="processing_system7" xd:mode="slave" xd:busInterfaceRef="S_AXI_HP3_ACLK"/>
+    <xd:busInterface xd:busTypeRef="reset" xd:name="proc_sys_reset_0_peripheral_reset" xd:instanceRef="proc_sys_reset_0" xd:componentRef="proc_sys_reset" xd:mode="master" xd:clockRef="clk_wiz_0_clk_out1" xd:busInterfaceRef="peripheral_reset" xd:clkDomain="/clk_wiz_0_clk_out1" xd:slr="default"/>
+    <xd:busInterface xd:busTypeRef="reset" xd:name="proc_sys_reset_0_interconnect_aresetn" xd:instanceRef="proc_sys_reset_0" xd:componentRef="proc_sys_reset" xd:mode="master" xd:clockRef="clk_wiz_0_clk_out1" xd:busInterfaceRef="interconnect_aresetn" xd:clkDomain="/clk_wiz_0_clk_out1" xd:slr="default"/>
+    <xd:busInterface xd:busTypeRef="reset" xd:name="proc_sys_reset_0_peripheral_aresetn" xd:instanceRef="proc_sys_reset_0" xd:componentRef="proc_sys_reset" xd:mode="master" xd:clockRef="clk_wiz_0_clk_out1" xd:busInterfaceRef="peripheral_aresetn" xd:clkDomain="/clk_wiz_0_clk_out1" xd:slr="default"/>
+    <xd:resourceEstimates xd:BRAM="0" xd:DSP="0" xd:FF="0" xd:LUT="0"/>
+  </xd:component>
+</xd:repository>

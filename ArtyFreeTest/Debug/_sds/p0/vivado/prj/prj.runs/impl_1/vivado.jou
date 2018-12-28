@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2018.2 (64-bit)
+# SW Build 2258646 on Thu Jun 14 20:03:12 MDT 2018
+# IP Build 2256618 on Thu Jun 14 22:10:49 MDT 2018
+# Start of session at: Tue Nov 13 05:45:10 2018
+# Process ID: 5208
+# Current directory: C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/p0/vivado/prj/prj.runs/impl_1
+# Command line: vivado.exe -log Arty_Z7_20_wrapper.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source Arty_Z7_20_wrapper.tcl -notrace
+# Log file: C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/p0/vivado/prj/prj.runs/impl_1/Arty_Z7_20_wrapper.vdi
+# Journal file: C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/p0/vivado/prj/prj.runs/impl_1\vivado.jou
+#-----------------------------------------------------------
+source Arty_Z7_20_wrapper.tcl -notrace

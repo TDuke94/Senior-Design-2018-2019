@@ -1,0 +1,83 @@
+(c) Copyright 2012-2018 Xilinx, Inc. All Rights Reserved.
+#-----------------------------------------------------------
+# Tool version  : sds++ 2018.2 SW Build 2258646 on Thu Jun 14 20:04:27 MDT 2018
+# Start time    : Fri Dec 14 14:38:09 -0500 2018
+# Command line  : sds++ --remote_ip_cache C:/Users/TimothyDuke/workspace/ip_cache -o ArtyFreeTest.elf ./src/dispatch.o ./src/main.o ./src/talky.o -dmclkid 11 -sds-sys-config FreeRTOS -sds-proc FreeRTOS -sds-pf {C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20}
+# Log file      : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds.log
+# Journal file  : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds.jou
+# Report file   : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds.rpt
+#-----------------------------------------------------------
+
+#-----------------------------------------------------------
+# This file contains undocumented internal commands and is
+# provided for diagnostic purposes. To reproduce the results
+# of this run, please run the sds++ command line above again.
+#-----------------------------------------------------------
+
+# Removing implementation files from previous run
+# Analyzing object files
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/dispatch.o.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/main.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/main.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/main.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/main.o.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/talky.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/talky.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/talky.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.data/talky.o.xml
+E:/SDSoC/SDx/2018.2/bin/build_xd_ip_db -ip_search 0  -sds-pf C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/.Xil/Arty_Z7_20.hpfm    -o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.cdb/xd_ip_db.xml  
+# Generating data motion network
+E:/SDSoC/SDx/2018.2/bin/llvm-link -o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/sds_all.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/./src/dispatch.s C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/./src/main.s C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/./src/talky.s
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm
+E:/SDSoC/SDx/2018.2/bin/XidanePass  --platform Arty_Z7_20  --dmclkid 11  --repo C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.cdb/xd_ip_db.xml  --dmdb E:/SDSoC/SDx/2018.2/data/DM.db   -os freertos -processor cortex-a9 -partition 0  
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+# Skipping block diagram (BD), address map, port information and device registration for partition 0
+# Rewrite caller functions
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+# Prepare hardware access API functions
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+# Create accelerator stub functions
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs
+# Compile hardware access API functions
+arm-none-eabi-gcc   -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I E:/SDSoC/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I E:/SDSoC/Vivado/2018.2/include -c  C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.c
+arm-none-eabi-g++  -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I E:/SDSoC/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I E:/SDSoC/Vivado/2018.2/include -c  C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.c
+arm-none-eabi-ar crs C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/libxlnk_stub.a C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.o
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs
+# Compile accelerator stub functions
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs
+arm-none-eabi-ar crs C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/libArtyFreeTest.a C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.o 
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+# Enable generation of hardware programming files
+# Enable generation of boot files
+cd _sds/p0/.cf_work
+E:/SDSoC/SDx/2018.2/bin/cf2sw  -i C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.llvm/apsys_0.xml  -r C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/.cdb/xd_ip_db.xml  -a address_map.xml  -pollMode 0 -mc
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+# Software tracing enabled
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs
+# Compile hardware access API functions
+arm-none-eabi-gcc   -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I E:/SDSoC/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I E:/SDSoC/Vivado/2018.2/include -c  C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.c
+arm-none-eabi-g++  -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I E:/SDSoC/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I E:/SDSoC/Vivado/2018.2/include -c  C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.c
+arm-none-eabi-ar crs C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/libxlnk_stub.a C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.o
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs
+arm-none-eabi-ar crs C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/libArtyFreeTest.a C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/cf_stub.o 
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp
+E:/SDSoC/SDK/2018.2/bin/hsi  -mode batch -notrace -quiet -source C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp/create_bsp.tcl
+# Create board support package library
+E:/SDSoC/SDK/2018.2/bin/hsi  -mode batch -notrace -quiet -source C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp/create_bsp_post.tcl
+cd C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug
+# Link application ELF file
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,--build-id=none -specs=E:/SDSoC/SDx/2018.2/data/toolchain/aarch32-none.spec -Wl,-T -Wl,C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/lscript.ld   C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/main.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/talky.o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/portinfo.o  -L C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp/ps7_cortexa9_0/lib  -L E:/SDSoC/SDx/2018.2/target/aarch32-none/lib -LC:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs -Wl,--start-group -lxilffs -lgcc -lc -lstdc++ -Wl,--end-group -Wl,--start-group   -lfreertos -lxilffs -lxil  -lgcc -lc  -lsds_lib -lxlnk_stub -lgcc -lc -Wl,--end-group -o C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/ArtyFreeTest.elf
+arm-none-eabi-objcopy -R .xdinfo -R .xddata -R .xdasm -R .xdfcnmap -R .xdhlscore -R .xdif -R .xdparams -R .xdcore -R .xdrepo -R .xdsdata -R .xdpp C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/ArtyFreeTest.elf
+# All user specified timing constraints are met.
+# sds++ completed at Fri Dec 14 14:42:41 -0500 2018
