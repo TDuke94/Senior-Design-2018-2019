@@ -1,0 +1,48 @@
+16:35:17 **** Incremental Build of configuration Debug for project ArtyFreeTest ****
+make pre-build main-build 
+sdsoc_make_clean Debug
+' '
+'Building file: ../src/QueueTest.c'
+'Invoking: SDSCC Compiler'
+sdscc -Wall -O0 -g -I"../src" -IC:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp -c -fmessage-length=0 -MT"src/QueueTest.o" -MMD -MP -MF"src/QueueTest.d" -MT"src/QueueTest.o" -o "src/QueueTest.o" "../src/QueueTest.c" -sds-sys-config FreeRTOS -sds-proc FreeRTOS -sds-pf "C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20\Arty_Z7_20.xpfm"
+       XILINX_VIVADO: "E:/SDSoC/Vivado/2018.2"
+   XILINX_VIVADO_HLS: "E:/SDSoC/Vivado/2018.2"
+          XILINX_SDK: "E:/SDSoC/SDK/2018.2"
+          XILINX_SDX: "E:/SDSoC/SDx/2018.2"
+XILINXD_LICENSE_FILE: ""
+     **** ENVIRONMENT DEBUG INFO ****
+              XILINX: ""
+          XILINX_SDK: "E:/SDSoC/SDK/2018.2"
+         XILINX_PATH: ""
+         RDI_BINROOT: "E:/SDSoC/SDx/2018.2/bin"
+         RDI_APPROOT: "E:/SDSoC/SDx/2018.2"
+         HDI_APPROOT: "E:/SDSoC/SDx/2018.2"
+        RDI_BASEROOT: "E:/SDSoC/SDx"
+         RDI_DATADIR: "E:/SDSoC/SDx/2018.2/data"
+          RDI_LIBDIR: "E:/SDSoC/SDx/2018.2/lib/win64.o"
+          RDI_BINDIR: "E:/SDSoC/SDx/2018.2/bin"
+XILINXD_LICENSE_FILE: ""
+        RDI_JAVAROOT: "E:/SDSoC/SDx/2018.2/tps/win64/jre"
+                PATH: "E:/SDSoC/SDx/2018.2/bin;E:/SDSoC/SDx/2018.2/lib/win64.o;E:/SDSoC/SDx/2018.2/tps/win64/jre/bin/server;E:/SDSoC/SDx/2018.2/tps/win64/jre/bin;E:/SDSoC/SDK/2018.2/bin;E:/SDSoC/SDx/2018.2\tps\win64\libxslt\bin;E:/SDSoC/SDK/2018.2\gnuwin\bin;E:/SDSoC/SDK/2018.2\gnu\arm\nt\bin;E:/SDSoC/Vivado/2018.2\bin;E:/SDSoC/SDK/2018.2/tps/win64/jre/bin/server;E:/SDSoC/SDK/2018.2/tps/win64/jre/bin;E:/SDSoC/SDK/2018.2/tps/win64/jre/lib/amd64;E:\SDSoC\SDK\2018.2\gnu\microblaze\nt\bin;E:\SDSoC\SDK\2018.2\gnu\microblaze\linux_toolchain\nt64_le\bin;E:\SDSoC\SDK\2018.2\gnu\microblaze\linux_toolchain\nt64_be\bin;E:\SDSoC\SDK\2018.2\gnu\aarch64\nt\aarch64-none\bin;E:\SDSoC\SDK\2018.2\gnu\aarch64\nt\aarch64-linux\bin;E:\SDSoC\SDK\2018.2\gnu\armr5\nt\gcc-arm-none-eabi\bin;E:\SDSoC\SDK\2018.2\gnu\aarch32\nt\gcc-arm-none-eabi\bin;E:\SDSoC\SDK\2018.2\gnu\aarch32\nt\gcc-arm-linux-gnueabi\bin;E:\SDSoC\SDK\2018.2\tps\win64\cmake-3.3.2\bin;;E:\SDSoC\SDK\2018.2\lib\win64.o;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\TimothyDuke\AppData\Local\Microsoft\WindowsApps;E:\SDSoC\SDK\2018.2\tps\mingw\6.2.0\win64.o\nt\bin;E:\SDSoC\SDK\2018.2\tps\mingw\6.2.0\win64.o\nt\libexec\gcc\x86_64-w64-mingw32\6.2.0;E:/SDSoC/SDx/2018.2\tps\mingw\6.2.0\win64.o\nt\bin;E:/SDSoC/SDx/2018.2\tps\mingw\6.2.0\win64.o\nt\libexec\gcc\x86_64-w64-mingw32\6.2.0"
+     **** ENVIRONMENT DEBUG INFO ****
+              XILINX: ""
+          XILINX_SDK: "E:/SDSoC/SDK/2018.2"
+         XILINX_PATH: ""
+         RDI_BINROOT: "E:/SDSoC/SDx/2018.2/bin"
+         RDI_APPROOT: "E:/SDSoC/SDx/2018.2"
+         HDI_APPROOT: "E:/SDSoC/SDx/2018.2"
+        RDI_BASEROOT: "E:/SDSoC/SDx"
+         RDI_DATADIR: "E:/SDSoC/SDx/2018.2/data"
+          RDI_LIBDIR: "E:/SDSoC/SDx/2018.2/lib/win64.o"
+          RDI_BINDIR: "E:/SDSoC/SDx/2018.2/bin"
+XILINXD_LICENSE_FILE: ""
+        RDI_JAVAROOT: "E:/SDSoC/SDx/2018.2/tps/win64/jre"
+                PATH: "E:/SDSoC/SDx/2018.2/bin;E:/SDSoC/SDx/2018.2/lib/win64.o;E:/SDSoC/SDx/2018.2/tps/win64/jre/bin/server;E:/SDSoC/SDx/2018.2/tps/win64/jre/bin;E:/SDSoC/SDK/2018.2/bin;E:/SDSoC/SDx/2018.2\tps\win64\libxslt\bin;E:/SDSoC/SDK/2018.2\gnuwin\bin;E:/SDSoC/SDK/2018.2\gnu\arm\nt\bin;E:/SDSoC/Vivado/2018.2\bin;E:/SDSoC/SDK/2018.2/tps/win64/jre/bin/server;E:/SDSoC/SDK/2018.2/tps/win64/jre/bin;E:/SDSoC/SDK/2018.2/tps/win64/jre/lib/amd64;E:\SDSoC\SDK\2018.2\gnu\microblaze\nt\bin;E:\SDSoC\SDK\2018.2\gnu\microblaze\linux_toolchain\nt64_le\bin;E:\SDSoC\SDK\2018.2\gnu\microblaze\linux_toolchain\nt64_be\bin;E:\SDSoC\SDK\2018.2\gnu\aarch64\nt\aarch64-none\bin;E:\SDSoC\SDK\2018.2\gnu\aarch64\nt\aarch64-linux\bin;E:\SDSoC\SDK\2018.2\gnu\armr5\nt\gcc-arm-none-eabi\bin;E:\SDSoC\SDK\2018.2\gnu\aarch32\nt\gcc-arm-none-eabi\bin;E:\SDSoC\SDK\2018.2\gnu\aarch32\nt\gcc-arm-linux-gnueabi\bin;E:\SDSoC\SDK\2018.2\tps\win64\cmake-3.3.2\bin;;E:\SDSoC\SDK\2018.2\lib\win64.o;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\TimothyDuke\AppData\Local\Microsoft\WindowsApps;E:\SDSoC\SDK\2018.2\tps\mingw\6.2.0\win64.o\nt\bin;E:\SDSoC\SDK\2018.2\tps\mingw\6.2.0\win64.o\nt\libexec\gcc\x86_64-w64-mingw32\6.2.0;E:/SDSoC/SDx/2018.2\tps\mingw\6.2.0\win64.o\nt\bin;E:/SDSoC/SDx/2018.2\tps\mingw\6.2.0\win64.o\nt\libexec\gcc\x86_64-w64-mingw32\6.2.0"
+Validating feature ap_sdsoc
+License available for feature ap_sdsoc
+Your ap_sdsoc license expires in 11 day(s)
+WARNING: [SdsCompiler 83-5110] Software platform XML file was not found, unable to resolve platform configuration
+ERROR: [SdsCompiler 83-5106] Platform specified as Arty_Z7_20.xpfm but the hw platform XML file was not found - is the platform name correct and is the path to the platform correct (if required)?
+ERROR: [SdsCompiler 83-5004] Build failed
+
+make: *** [src/QueueTest.o] Error 1

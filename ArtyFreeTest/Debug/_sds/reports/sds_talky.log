@@ -1,7 +1,7 @@
 (c) Copyright 2012-2018 Xilinx, Inc. All Rights Reserved.
 #-----------------------------------------------------------
 # Tool version  : sdscc 2018.2 SW Build 2258646 on Thu Jun 14 20:04:27 MDT 2018
-# Start time    : Fri Dec 14 14:37:35 -0500 2018
+# Start time    : Fri Dec 28 17:51:27 -0500 2018
 # Command line  : sdscc -Wall -O0 -g -I../src {-IC:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp} -c -fmessage-length=0 -MTsrc/talky.o -MMD -MP -MFsrc/talky.d -MTsrc/talky.o -o src/talky.o ../src/talky.c -sds-sys-config FreeRTOS -sds-proc FreeRTOS -sds-pf {C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20}
 # Log file      : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds_talky.log
 # Journal file  : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds_talky.jou
@@ -37,4 +37,4 @@ C:/Users/TimothyDuke/workspace/ArtyFreeTest/src/talky.c:115:15: warning: variabl
                ^~~~
 arm-none-eabi-objcopy --add-section .xdsdata=C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/talky.o.xml src/talky.o
 sdscc log file saved as C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds_talky.log
-sdscc completed at Fri Dec 14 14:38:05 -0500 2018
+sdscc completed at Fri Dec 28 17:51:40 -0500 2018

@@ -1,0 +1,23 @@
+/*
+ * CalibrationFilter.c
+ *
+ * Author: Timothy Duke
+ *
+ * UCF ECE Department
+ * Developed as part of Senior Design with:
+ * 		Daniel G.
+ * 		Fred D.
+ * 		Linnette M.
+ *
+ * Filter which applies calibration data
+ */
+
+void CalibrationFilter (void * parameters)
+{
+	QueueHandle_t SourceQueue, DestQueue;
+
+	SourceQueue = parameters[0];
+	DestQueue = parameters[1];
+
+
+}

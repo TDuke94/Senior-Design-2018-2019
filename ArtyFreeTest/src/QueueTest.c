@@ -14,10 +14,6 @@
  */
 
 #include "QueueTest.h"
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-#include "xgpio.h"
 
 /* QueueHandle used by both tasks herein located
  *
@@ -42,37 +38,20 @@ QueueHandle_t myQueue;
 void SendTask(void *parameters)
 {
 	char TXBuffer[30];
-	int queueLength, blockSize, DelayFlag;
+	int queueLength, blockSize, DelayFlag, i;
+	QueueData myQueueData;
 
 	if (parameters == NULL)
 	{
 		xil_printf("no parameters sent to SendTask()\nabort\n");
-		xTaskDelete(NULL);
+		vTaskDelete(NULL);
 	}
 
-	if (parameters[0] == NULL)
-	{
-		xil_printf("Parameter[0] is NULL\n\tShould be type QueueHandle_t and initialized");
-		xTaskDelete(NULL);
-	}
+	myQueueData = *((QueueData *) parameters);
 
-	myQueue = parameters[0];
-
-	if (parameters[1] == NULL)
-	{
-		xil_printf("Parameter[1] is NULL\n\tShould be type int and initialized as queue length");
-		xTaskDelete(NULL);
-	}
-
-	queueLength = parameters[1];
-
-	if (parameters[2] == NULL)
-	{
-		xil_printf("Parameter[2] is NULL\n\tShould be type int and initialized as block size");
-		xTaskDelete(NULL);
-	}
-
-	blockSize = parameters[2];
+	myQueue = myQueueData.inputQueue;
+	queueLength = myQueueData.queueLength;
+	blockSize = myQueueData.blockSize;
 
 	// set DelayFlag to FALSE, no initial delay
 	DelayFlag = FALSE;
@@ -99,9 +78,12 @@ void SendTask(void *parameters)
 			continue;
 		}
 
-		TXBuffer = "Message\0";
+		for (i = 0; i < 10; i++)
+		{
+			TXBuffer[i] = (char) (i + 65);
+		}
 
-		xQueueSend(myQueue, (void)* TXBuffer, (TickType_t) 0);
+		xQueueSend(myQueue, (void *) TXBuffer, (TickType_t) 0);
 
 		// task termination condition, currently false, leads to task termination
 		if (FALSE)
@@ -112,7 +94,7 @@ void SendTask(void *parameters)
 	}
 
 	// Don't fall off the end
-	xTaskDelete(NULL);
+	vTaskDelete(NULL);
 }
 
 /*
@@ -129,36 +111,19 @@ void ReceiveTask(void *parameters)
 {
 	char RXBuffer[30];
 	int queueLength, blockSize, DelayFlag;
+	QueueData myQueueData;
 
 	if (parameters == NULL)
 	{
 		xil_printf("no parameters sent to ReceiveTask()\nabort\n");
-		xTaskDelete(NULL);
+		vTaskDelete(NULL);
 	}
 
-	if (parameters[0] == NULL)
-	{
-		xil_printf("Parameter[0] is NULL\n\tShould be type QueueHandle_t and initialized");
-		xTaskDelete(NULL);
-	}
+	myQueueData = *((QueueData *) parameters);
 
-	myQueue = parameters[0];
-
-	if (parameters[1] == NULL)
-	{
-		xil_printf("Parameter[1] is NULL\n\tShould be type int and initialized as queue length");
-		xTaskDelete(NULL);
-	}
-
-	queueLength = parameters[1];
-
-	if (parameters[2] == NULL)
-	{
-		xil_printf("Parameter[2] is NULL\n\tShould be type int and initialized as block size");
-		xTaskDelete(NULL);
-	}
-
-	blockSize = parameters[2];
+	myQueue = myQueueData.inputQueue;
+	queueLength = myQueueData.queueLength;
+	blockSize = myQueueData.blockSize;
 
 	// set Delay Flag to true, start with a delay
 	DelayFlag = TRUE;
@@ -197,4 +162,6 @@ void ReceiveTask(void *parameters)
 			break;
 		}
 	}
+
+	vTaskDelete(NULL);
 }

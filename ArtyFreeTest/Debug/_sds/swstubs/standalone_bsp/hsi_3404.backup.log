@@ -2,8 +2,8 @@
 # hsi v2018.2 (64-bit)
 # SW Build 2258646 on Thu Jun 14 20:03:12 MDT 2018
 # 
-# Start of session at: Fri Dec 14 12:50:05 2018
-# Process ID: 4180
+# Start of session at: Fri Dec 28 17:52:14 2018
+# Process ID: 3404
 # Current directory: C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp
 # Command line: hsi.exe -mode batch -notrace -quiet -source C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp/create_bsp.tcl
 # Log file: C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/standalone_bsp/hsi.log
@@ -11,7 +11,8 @@
 #-----------------------------------------------------------
 CRITICAL WARNING: [Board 49-71] The board_part definition was not found for digilentinc.com:arty-z7-20:part0:1.0. The project's board_part property was not set, but the project's part property was set to xc7z020clg400-1. Valid board_part values can be retrieved with the 'get_board_parts' Tcl command. Check if board.repoPaths parameter is set and the board_part is installed from the tcl app store.
 INFO: [Hsi 55-1698] elapsed time for repository loading 0 seconds
-open_hw_design: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 173.750 ; gain = 117.855
+open_hw_design: Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 173.617 ; gain = 117.441
 In start copy ps7_cortexa9
 INFO:[hsi-utils-101] "xprint_generated_header" tcl procedure is deprecated, use "hsi::utils::write_c_header " instead
 INFO:[hsi-utils-101] "xprint_generated_header" tcl procedure is deprecated, use "hsi::utils::write_c_header " instead
+generate_bsp: Time (s): cpu = 00:00:00 ; elapsed = 00:00:34 . Memory (MB): peak = 175.746 ; gain = 2.129

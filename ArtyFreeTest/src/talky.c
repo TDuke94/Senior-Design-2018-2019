@@ -45,7 +45,7 @@ void blabber (void * parameters)
 	{
 		for (i = 1; i <= loop; i++)
 		{
-			xil_printf("Loop number: %i\n", &i);
+			//xil_printf("Loop number: %i\n", &i);
 		}
 
 		for (i = 0; i < 10000; i++)
@@ -75,7 +75,7 @@ void chatTX (void * parameters)
 
 	for (;;)
 	{
-		xil_printf("I'm also printing\n");
+		//xil_printf("I'm also printing\n");
 	}
 
 	vTaskDelete (NULL);
@@ -140,7 +140,7 @@ void blinky(void * parameters)
 			hold = 0;
 		}
 
-		xil_printf ("LED\n");
+		//xil_printf ("LED\n");
 
 		if (j == 0)
 		{

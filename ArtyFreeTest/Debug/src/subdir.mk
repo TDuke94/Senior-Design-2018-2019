@@ -4,16 +4,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/QueueTest.c \
 ../src/dispatch.c \
 ../src/main.c \
 ../src/talky.c 
 
 OBJS += \
+./src/QueueTest.o \
 ./src/dispatch.o \
 ./src/main.o \
 ./src/talky.o 
 
 C_DEPS += \
+./src/QueueTest.d \
 ./src/dispatch.d \
 ./src/main.d \
 ./src/talky.d 

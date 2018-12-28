@@ -35,11 +35,12 @@ void printError (void);
 void dispatchPipeline(void)
 {
 	int STACK_SIZE = 400;
-	void * parameters;
 	int QueueLength = 5;
 	int BlockSize = 30;
 
 	QueueHandle_t myQueue = NULL;
+
+	QueueData *myQueueData;
 
 	BaseType_t xReturned;
 
@@ -104,13 +105,17 @@ void dispatchPipeline(void)
 	 * 		- parameters[2] -> int BlockSize
 	 */
 
-	parameters;
+	myQueueData = pvPortMalloc(sizeof(QueueData));
+
+	myQueueData->inputQueue = xQueueCreate(QueueLength, BlockSize);
+	myQueueData->queueLength = QueueLength;
+	myQueueData->blockSize = BlockSize;
 
 	xReturned = xTaskCreate(
 					ReceiveTask,
 					"QReceive",
 					STACK_SIZE,
-					parameters,
+					(void *) myQueueData,
 					tskIDLE_PRIORITY + 1,
 					&xQReceiveHandle
 					);
@@ -121,12 +126,12 @@ void dispatchPipeline(void)
 						SendTask,
 						"QSend",
 						STACK_SIZE,
-						parameters,
+						(void *) myQueueData,
 						tskIDLE_PRIORITY + 1,
 						&xQSendHandle
 						);
 
-		if (xReturned != pdPASS) printError();
+	if (xReturned != pdPASS) printError();
 
 	// start the scheduler
 	vTaskStartScheduler();

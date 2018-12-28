@@ -23,6 +23,6 @@
  */
 void dispatchPipeline (void);
 
-void continualDispatcher (void);
+void continualDispatcher (void *);
 
 #endif

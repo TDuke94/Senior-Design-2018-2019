@@ -25,7 +25,9 @@ C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o \
  C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp/xpseudo_asm.h \
  C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp/xreg_cortexa9.h \
  C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp/xpseudo_asm_gcc.h \
- C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp/xparameters.h
+ C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp/xparameters.h \
+ C:/Users/TimothyDuke/workspace/ArtyFreeTest/src/QueueTest.h \
+ C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp/queue.h
 
 C:/Users/TimothyDuke/workspace/ArtyFreeTest/src/dispatch.h:
 
@@ -76,3 +78,7 @@ C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS
 C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp/xpseudo_asm_gcc.h:
 
 C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp/xparameters.h:
+
+C:/Users/TimothyDuke/workspace/ArtyFreeTest/src/QueueTest.h:
+
+C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp/queue.h:

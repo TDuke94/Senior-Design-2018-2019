@@ -16,6 +16,20 @@
 #ifndef QUEUETEST_H
 #define QUEUETEST_H
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "xgpio.h"
+
+// Queue Data Set
+typedef struct QueueData
+{
+	QueueHandle_t inputQueue;
+	QueueHandle_t outputQueue;
+	int queueLength;
+	int blockSize;
+} QueueData;
+
 // primary task functions
 void SendTask(void *);
 void ReceiveTask(void *);
