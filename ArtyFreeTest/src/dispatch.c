@@ -14,8 +14,6 @@
 
 #include "dispatch.h"
 #include "FreeRTOS.h"
-#include "task.h"
-#include "talky.h"
 #include "QueueTest.h"
 #include "xgpio.h"
 
@@ -36,100 +34,100 @@ void dispatchPipeline(void)
 {
 	int STACK_SIZE = 400;
 	int QueueLength = 5;
-	int BlockSize = 30;
+	int BlockSize = 5;
 
-	QueueHandle_t myQueue = NULL;
+	QueueHandle_t Queue_1, Queue_2, Queue_3;
 
-	QueueData *myQueueData;
+	QueueData *Q_Data;
 
 	BaseType_t xReturned;
 
-	TaskHandle_t xBlabHandle = NULL;
-	TaskHandle_t xChatTXHandle = NULL;
-	TaskHandle_t xBlinkHandle = NULL;
-	TaskHandle_t xQSendHandle = NULL;
-	TaskHandle_t xQReceiveHandle = NULL;
+	TaskHandle_t xQStartHandle = NULL;
+	TaskHandle_t xQAddHandle = NULL;
+	TaskHandle_t xQMultHandle = NULL;
+	TaskHandle_t xQPrintHandle = NULL;
 
-	xil_printf("I'm in dispatch\n");
-
-	xReturned = xTaskCreate(
-			blabber,
-			"Blab",
-			STACK_SIZE,
-			NULL,
-			tskIDLE_PRIORITY + 1,
-			&xBlabHandle
-			);
-
-	if (xReturned != pdPASS) printError();
-
-	xReturned = xTaskCreate(
-			chatTX,
-			"ChatTX",
-			STACK_SIZE,
-			NULL,
-			tskIDLE_PRIORITY + 1,
-			&xChatTXHandle
-			);
-
-	if (xReturned != pdPASS) printError();
-
-	xReturned = xTaskCreate(
-				blinky,
-				"Blink",
-				STACK_SIZE,
-				NULL,
-				tskIDLE_PRIORITY + 1,
-				&xBlinkHandle
-				);
-
-	if (xReturned != pdPASS) printError();
-
-	xReturned = xTaskCreate(
-				SendTask,
-				"QSend",
-				STACK_SIZE,
-				NULL,
-				tskIDLE_PRIORITY + 1,
-				&xQSendHandle
-				);
-
-	if (xReturned != pdPASS) printError();
+	/*
+	 * Create the Queues
+	 */
+	Queue_1 = xQueueCreate(QueueLength, BlockSize);
+	Queue_2 = xQueueCreate(QueueLength, BlockSize);
+	Queue_3 = xQueueCreate(QueueLength, BlockSize);
 
 	/*
 	 * The next Two Tasks require parameters, including an initialized Queue
 	 *
-	 * parameters are as follows:
-	 * 		- parameters[0] -> QueueHandle_t
-	 * 		- parameters[1] -> int QueueLength
-	 * 		- parameters[2] -> int BlockSize
+	 * parameters are a QueueData type struct
 	 */
 
-	myQueueData = pvPortMalloc(sizeof(QueueData));
+	// Allocate space to store data
+	Q_Data = pvPortMalloc(sizeof(QueueData));
 
-	myQueueData->inputQueue = xQueueCreate(QueueLength, BlockSize);
-	myQueueData->queueLength = QueueLength;
-	myQueueData->blockSize = BlockSize;
+	// load queues for first task
+	Q_Data->inputQueue = NULL;
+	Q_Data->outputQueue = Queue_1;
+	Q_Data->queueLength = QueueLength;
+	Q_Data->blockSize = BlockSize;
 
 	xReturned = xTaskCreate(
-					ReceiveTask,
-					"QReceive",
+					QStartTask,
+					"QStart",
 					STACK_SIZE,
-					(void *) myQueueData,
+					(void *) Q_Data,
 					tskIDLE_PRIORITY + 1,
-					&xQReceiveHandle
+					&xQStartHandle
 					);
 
 	if (xReturned != pdPASS) printError();
 
+	// load queues for second task
+	Q_Data->inputQueue = Queue_1;
+	Q_Data->outputQueue = Queue_2;
+	Q_Data->queueLength = QueueLength;
+	Q_Data->blockSize = BlockSize;
+
 	xReturned = xTaskCreate(
-						SendTask,
-						"QSend",
-						STACK_SIZE,
-						(void *) myQueueData,
-						tskIDLE_PRIORITY + 1,
-						&xQSendHandle
-						);
+					QAddTask,
+					"QAdd",
+					STACK_SIZE,
+					(void *) Q_Data,
+					tskIDLE_PRIORITY + 1,
+					&xQAddHandle
+					);
+
+	if (xReturned != pdPASS) printError();
+
+	// load queues for first task
+	Q_Data->inputQueue = Queue_2;
+	Q_Data->outputQueue = Queue_3;
+	Q_Data->queueLength = QueueLength;
+	Q_Data->blockSize = BlockSize;
+
+	xReturned = xTaskCreate(
+					QMultTask,
+					"QMult",
+					STACK_SIZE,
+					(void *) Q_Data,
+					tskIDLE_PRIORITY + 1,
+					&xQMultHandle
+					);
+
+	if (xReturned != pdPASS) printError();
+
+	// load queues for first task
+	Q_Data->inputQueue = Queue_3;
+	Q_Data->outputQueue = NULL;
+	Q_Data->queueLength = QueueLength;
+	Q_Data->blockSize = BlockSize;
+
+	xReturned = xTaskCreate(
+					QPrintTask,
+					"QPrint",
+					STACK_SIZE,
+					(void *) Q_Data,
+					tskIDLE_PRIORITY + 1,
+					&xQPrintHandle
+					);
 
 	if (xReturned != pdPASS) printError();
 

@@ -8,20 +8,16 @@
  * 		Fred D.
  * 		Linnette M.
  *
+ * Version:
+ * 		0.0 - December 28, 2018 - initial test of queues
+ * 		0.1 - January 3, 2019 - test of dynamic allocated queue and data motion (4 tasks)
+ *
  * Test of Queue functionality in FreeRTOS
  * 		- Two tasks
  * 		- Initialize a Queue Between them (note: task 1 creates task after initialization)
  */
 
 #include "QueueTest.h"
-
-/* QueueHandle used by both tasks herein located
- *
- * Likely will move this internal to the two tasks and initialize outside
- * This then enables the task to be the queue manager
- * but use the same functions for multiple queue-tasks
- */
-QueueHandle_t myQueue;
 
 /*
  * SendTask
@@ -31,25 +27,30 @@ QueueHandle_t myQueue;
  * queue must be created externally with xQueueCreate
  *
  * input:
- * 		- parameters[0] -> queueHandle
- * 		- parameters[1] -> size of queue
- * 		- parameters[2] -> size of each block
+ * 		- QueueData (struct)
  */
-void SendTask(void *parameters)
+void QStartTask(void *parameters)
 {
-	char TXBuffer[30];
 	int queueLength, blockSize, DelayFlag, i;
+
+	// data sent through this queue
+	int *array;
+
+	QueueHandle_t outputQueue;
+
 	QueueData myQueueData;
+
+	xil_printf("in_1");
 
 	if (parameters == NULL)
 	{
-		xil_printf("no parameters sent to SendTask()\nabort\n");
+		xil_printf("no parameters sent to QStartTask()\nabort\n");
 		vTaskDelete(NULL);
 	}
 
 	myQueueData = *((QueueData *) parameters);
 
-	myQueue = myQueueData.inputQueue;
+	outputQueue = myQueueData.outputQueue;
 	queueLength = myQueueData.queueLength;
 	blockSize = myQueueData.blockSize;
 
@@ -78,17 +79,22 @@ void SendTask(void *parameters)
 			continue;
 		}
 
+		// allocate the array
+		array = pvPortMalloc(10 * sizeof(int));
+
 		for (i = 0; i < 10; i++)
 		{
-			TXBuffer[i] = (char) (i + 65);
+			array[i] = i;
 		}
 
-		xQueueSend(myQueue, (void *) TXBuffer, (TickType_t) 0);
+		configASSERT ( outputQueue );
+
+		xQueueSend(outputQueue, (void *) &array, (TickType_t) 0);
 
 		// task termination condition, currently false, leads to task termination
 		if (FALSE)
 		{
-			xil_printf("TX Task Termination Called\n");
+			xil_printf("Start Task Termination Called\n");
 			break;
 		}
 	}
@@ -98,30 +104,36 @@ void SendTask(void *parameters)
 }
 
 /*
- * Receive Task
+ * QAddTask Task
  *
- * Take Data from the queue
+ * Take Data from the queue, adds 1, puts in next queue
  *
  * input:
- * 		- parameters[0] -> queueHandle
- * 		- parameters[1] -> size of queue
- * 		- parameters[2] -> size of each block
+ * 		- QueueData (struct)
  */
-void ReceiveTask(void *parameters)
+void QAddTask(void *parameters)
 {
-	char RXBuffer[30];
-	int queueLength, blockSize, DelayFlag;
+	int queueLength, blockSize, DelayFlag, i;
+
+	int * array;
+
+	QueueHandle_t inputQueue;
+	QueueHandle_t outputQueue;
+
+	xil_printf("in_2");
+
 	QueueData myQueueData;
 
 	if (parameters == NULL)
 	{
-		xil_printf("no parameters sent to ReceiveTask()\nabort\n");
+		xil_printf("no parameters sent to QAddTask()\nabort\n");
 		vTaskDelete(NULL);
 	}
 
 	myQueueData = *((QueueData *) parameters);
 
-	myQueue = myQueueData.inputQueue;
+	inputQueue = myQueueData.inputQueue;
+	outputQueue = myQueueData.outputQueue;
 	queueLength = myQueueData.queueLength;
 	blockSize = myQueueData.blockSize;
 
@@ -140,7 +152,7 @@ void ReceiveTask(void *parameters)
 		}
 
 		// RX Condition Checking - queue is not empty
-		if (myQueue == 0)
+		if (inputQueue == 0)
 		{
 			// set delay flag to not waste processor time
 			DelayFlag = TRUE;
@@ -150,18 +162,180 @@ void ReceiveTask(void *parameters)
 		}
 
 		// take from Buffer
-		xQueueReceive (myQueue, (void*) RXBuffer, (TickType_t) 5);
+		xQueueReceive (inputQueue, (void*) &array, (TickType_t) 5);
 
-		// Use the Data
-		xil_printf(RXBuffer);
+		for (i = 0; i < 10; i++)
+		{
+			array [i] += 1;
+		}
+
+		xQueueSend (outputQueue, (void*) &array, (TickType_t) 5);
 
 		// Termination Condition Checking
 		if (FALSE)
 		{
-			xil_printf("RX Task Termination Called\n");
+			xil_printf("Add Task Termination Called\n");
 			break;
 		}
 	}
 
 	vTaskDelete(NULL);
 }
+
+/*
+ * QMultTask Task
+ *
+ * Take Data from the queue, multiplies it by 2, puts in next queue
+ *
+ * input:
+ * 		- QueueData (struct)
+ */
+void QMultTask(void *parameters)
+{
+	int queueLength, blockSize, DelayFlag, i;
+
+	int * array;
+
+	QueueHandle_t inputQueue;
+	QueueHandle_t outputQueue;
+
+	xil_printf("in_3");
+
+	QueueData myQueueData;
+
+	if (parameters == NULL)
+	{
+		xil_printf("no parameters sent to QMultTask()\nabort\n");
+		vTaskDelete(NULL);
+	}
+
+	myQueueData = *((QueueData *) parameters);
+
+	inputQueue = myQueueData.inputQueue;
+	outputQueue = myQueueData.outputQueue;
+	queueLength = myQueueData.queueLength;
+	blockSize = myQueueData.blockSize;
+
+	// set Delay Flag to true, start with a delay
+	DelayFlag = TRUE;
+
+	for (;;)
+	{
+		// delay if flag is set
+		if(DelayFlag == TRUE)
+		{
+			// clear flag
+			DelayFlag = FALSE;
+			// delay
+			vTaskDelay (200);
+		}
+
+		// RX Condition Checking - queue is not empty
+		if (inputQueue == 0)
+		{
+			// set delay flag to not waste processor time
+			DelayFlag = TRUE;
+
+			// re-enter loop
+			continue;
+		}
+
+		// take from Buffer
+		xQueueReceive (inputQueue, (void*) &array, (TickType_t) 5);
+
+		for (i = 0; i < 10; i++)
+		{
+			array [i] *= 2;
+		}
+
+		xQueueSend (outputQueue, (void*) &array, (TickType_t) 5);
+
+		// Termination Condition Checking
+		if (FALSE)
+		{
+			xil_printf("Mult Task Termination Called\n");
+			break;
+		}
+	}
+
+	vTaskDelete(NULL);
+}
+
+/*
+ * QPrintTask Task
+ *
+ * Take Data from the queue
+ *
+ * input:
+ * 		- QueueData (struct)
+ */
+void QPrintTask(void *parameters)
+{
+	int queueLength, blockSize, DelayFlag, i;
+
+	int * array;
+
+	QueueHandle_t inputQueue;
+
+	QueueData myQueueData;
+
+	xil_printf("in_4");
+
+	if (parameters == NULL)
+	{
+		xil_printf("no parameters sent to QPrintTask()\nabort\n");
+		vTaskDelete(NULL);
+	}
+
+	myQueueData = *((QueueData *) parameters);
+
+	inputQueue = myQueueData.inputQueue;
+	queueLength = myQueueData.queueLength;
+	blockSize = myQueueData.blockSize;
+
+	// set Delay Flag to true, start with a delay
+	DelayFlag = TRUE;
+
+	for (;;)
+	{
+		// delay if flag is set
+		if(DelayFlag == TRUE)
+		{
+			// clear flag
+			DelayFlag = FALSE;
+			// delay
+			vTaskDelay (200);
+		}
+
+		// RX Condition Checking - queue is not empty
+		if (inputQueue == 0)
+		{
+			// set delay flag to not waste processor time
+			DelayFlag = TRUE;
+
+			// re-enter loop
+			continue;
+		}
+
+		// take from Buffer
+		xQueueReceive (inputQueue, (void*) &array, (TickType_t) 5);
+
+		for (i = 0; i < 10; i++)
+		{
+			xil_printf("%d\n", array[i]);
+		}
+		xil_printf("\n");
+
+		vPortFree(array);
+
+		// Termination Condition Checking
+		if (FALSE)
+		{
+			xil_printf("Print Task Termination Called\n");
+			break;
+		}
+	}
+
+	vTaskDelete(NULL);
+}
+

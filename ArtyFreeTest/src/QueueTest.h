@@ -31,7 +31,9 @@ typedef struct QueueData
 } QueueData;
 
 // primary task functions
-void SendTask(void *);
-void ReceiveTask(void *);
+void QStartTask(void *);
+void QAddTask(void *);
+void QMultTask(void *);
+void QPrintTask(void *);
 
 #endif

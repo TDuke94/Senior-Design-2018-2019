@@ -1,7 +1,7 @@
 (c) Copyright 2012-2018 Xilinx, Inc. All Rights Reserved.
 #-----------------------------------------------------------
 # Tool version  : sdscc 2018.2 SW Build 2258646 on Thu Jun 14 20:04:27 MDT 2018
-# Start time    : Fri Dec 28 17:50:56 -0500 2018
+# Start time    : Thu Jan 03 21:23:24 -0500 2019
 # Command line  : sdscc -Wall -O0 -g -I../src {-IC:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp} -c -fmessage-length=0 -MTsrc/dispatch.o -MMD -MP -MFsrc/dispatch.d -MTsrc/dispatch.o -o src/dispatch.o ../src/dispatch.c -sds-sys-config FreeRTOS -sds-proc FreeRTOS -sds-pf {C:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20}
 # Log file      : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds_dispatch.log
 # Journal file  : C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/reports/sds_dispatch.jou
@@ -19,4 +19,4 @@ E:/SDSoC/SDx/2018.2/bin/clang_wrapper -I../src {-IC:\Users\TimothyDuke\workspace
 # Compiling C:/Users/TimothyDuke/workspace/ArtyFreeTest/src/dispatch.c
 arm-none-eabi-gcc -c -I../src {-IC:\Users\TimothyDuke\workspace\Arty_Z7_20\export\Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp} -Wall -O0 -g -fmessage-length=0 -MMD -MP -D __SDSCC__ -MTC:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o -MFC:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.d -MTC:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/src/dispatch.o -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I C:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I E:/SDSoC/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I E:/SDSoC/Vivado/2018.2/include C:/Users/TimothyDuke/workspace/ArtyFreeTest/src/dispatch.c -o src/dispatch.o
 arm-none-eabi-objcopy --add-section .xdsdata=C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/swstubs/dispatch.o.xml src/dispatch.o
-# sdscc completed at Fri Dec 28 17:51:09 -0500 2018
+# sdscc completed at Thu Jan 03 21:23:52 -0500 2019
