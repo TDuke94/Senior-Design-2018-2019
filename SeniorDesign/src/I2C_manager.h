@@ -56,20 +56,21 @@
  * Include Files
  */
 #include "xiic.h"
-#include "xintc.h"
+#include "xscugic.h"
 #include "xil_exception.h"
 
 /*
  * Cast Xilinx Device ID's to internal use name
  */
 #define IIC_DEVICE_ID		XPAR_IIC_0_DEVICE_ID
-#define INTC_DEVICE_ID		XPAR_INTC_0_DEVICE_ID
-#define IIC_INTR_ID			XPAR_INTC_0_IIC_0_VEC_ID
+#define INTC_DEVICE_ID		XPAR_SCUGIC_0_DEVICE_ID
+#define IIC_INTR_ID			XPAR_FABRIC_IIC_0_VEC_ID
 
 /*
  * Function Prototypes
  */
-void I2CInit(void);
+void I2C_Task(void *parameters);
+int I2CInit(void);
 int SlaveWriteData (u16 ByteCount);
 int SlaveReadData (u8 *BufferPtr, u16 ByteCount);
 static int SetupInterruptSystem (XIic * IicInstPtr);

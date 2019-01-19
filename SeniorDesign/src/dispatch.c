@@ -16,6 +16,7 @@
 #include "FreeRTOS.h"
 #include "QueueTest.h"
 #include "xgpio.h"
+#include "I2C_manager.h"
 
 // helper functions
 void printError (void);
@@ -36,9 +37,9 @@ void dispatchPipeline(void)
 	int QueueLength = 5;
 	int BlockSize = 5;
 
-	QueueHandle_t Queue_1, Queue_2, Queue_3;
+	QueueHandle_t Queue_1, Queue_2, Queue_3, Queue_4;
 
-	QueueData *Q_Data_1, *Q_Data_2, *Q_Data_3, *Q_Data_4;
+	QueueData *Q_Data_1, *Q_Data_2, *Q_Data_3, *Q_Data_4, *Q_Data_5;
 
 	BaseType_t xReturned;
 
@@ -46,6 +47,7 @@ void dispatchPipeline(void)
 	TaskHandle_t xQAddHandle = NULL;
 	TaskHandle_t xQMultHandle = NULL;
 	TaskHandle_t xQPrintHandle = NULL;
+	TaskHandle_t xI2CHandle = NULL;
 
 	/*
 	 * Create the Queues
@@ -53,6 +55,7 @@ void dispatchPipeline(void)
 	Queue_1 = xQueueCreate(QueueLength, BlockSize);
 	Queue_2 = xQueueCreate(QueueLength, BlockSize);
 	Queue_3 = xQueueCreate(QueueLength, BlockSize);
+	Queue_4 = xQueueCreate(QueueLength, BlockSize);
 
 	/*
 	 * The next Two Tasks require parameters, including an initialized Queue
@@ -136,6 +139,26 @@ void dispatchPipeline(void)
 					(void *) Q_Data_4,
 					tskIDLE_PRIORITY + 1,
 					&xQPrintHandle
+					);
+
+	if (xReturned != pdPASS) printError();
+
+	// Allocate space to store data
+	Q_Data_5 = pvPortMalloc(sizeof(QueueData));
+
+	// load queues for first task
+	Q_Data_5->inputQueue = NULL;
+	Q_Data_5->outputQueue = Queue_4;
+	Q_Data_5->queueLength = QueueLength;
+	Q_Data_5->blockSize = BlockSize;
+
+	xReturned = xTaskCreate(
+					I2C_Task,
+					"I2C",
+					STACK_SIZE,
+					(void *) Q_Data_5,
+					tskIDLE_PRIORITY + 1,
+					&xI2CHandle
 					);
 
 	if (xReturned != pdPASS) printError();

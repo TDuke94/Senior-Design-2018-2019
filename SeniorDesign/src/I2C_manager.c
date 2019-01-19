@@ -68,10 +68,11 @@
  */
 
 XIic IicInstance;
-XIntc InterruptController;
+XScuGic InterruptController;
+static XScuGic_Config *GicConfig;
 
 u8 WriteBuffer[SEND_COUNT];
-u8 ReadBufer[RECEIVE_COUNT];
+u8 ReadBuffer[RECEIVE_COUNT];
 
 volatile u8 TransmitComplete;
 volatile u8 ReceiveComplete;
@@ -140,7 +141,7 @@ void I2C_Task(void *parameters)
 		for (i = 0; i < RECEIVE_COUNT; i++)
 			outputArray[i] = ReadBuffer[i];
 
-		xQueueSend(outputQueue, (void *) &outputArray, (TickType_t) 0);
+		//xQueueSend(outputQueue, (void *) &outputArray, (TickType_t) 0);
 
 		/*
 		 * reply over I2C
@@ -169,6 +170,10 @@ int I2CInit(void)
 	int Status;
 	XIic_Config *ConfigPtr;
 
+	/*
+	 * General I2C Setup
+	 */
+
 	ConfigPtr = XIic_LookupConfig(IIC_DEVICE_ID);
 	if (ConfigPtr == NULL) return XST_FAILURE;
 
@@ -178,6 +183,7 @@ int I2CInit(void)
 	Status = SetupInterruptSystem (&IicInstance);
 	if (Status != XST_SUCCESS) return XST_FAILURE;
 
+	// Slave Required
 	XIic_SlaveInclude();
 
 	XIic_SetStatusHandler (&IicInstance, &IicInstance, (XIic_StatusHandler) StatusHandler);
@@ -378,52 +384,20 @@ static void ReceiveHandler(XIic *InstancePtr)
 }
 
 /****************************************************************************/
-/**
-* This function setups the interrupt system so interrupts can occur for the
-* IIC. The function is application-specific since the actual system may or
-* may not have an interrupt controller. The IIC device could be directly
-* connected to a processor without an interrupt controller. The user should
-* modify this function to fit the application.
-*
-* @param	IicInstPtr contains a pointer to the instance of the IIC  which
-*		is going to be connected to the interrupt controller.
-*
-* @return	XST_SUCCESS if successful else XST_FAILURE.
-*
-* @note		None.
-*
-****************************************************************************/
 static int SetupInterruptSystem(XIic * IicInstPtr)
 {
 	int Status;
 
-	if (InterruptController.IsStarted == XIL_COMPONENT_IS_STARTED) return XST_SUCCESS;
+	GicConfig = XScuGic_LookupConfig(INTC_DEVICE_ID);
+	if (GicConfig == NULL) return XST_FAILURE;
 
-	/*
-	 * Initialize the interrupt controller driver so that it's ready to use.
-	 */
-	Status = XIntc_Initialize(&InterruptController, INTC_DEVICE_ID);
+	Status = XScuGic_CfgInitialize( &InterruptController, GicConfig, GicConfig->CpuBaseAddress);
 	if (Status != XST_SUCCESS) return XST_FAILURE;
 
 	/*
-	 * Connect the device driver handler that will be called when an
-	 * interrupt for the device occurs, the handler defined above
-	 * performs the specific interrupt processing for the device.
+	 * I2C Interrupt Function Setup
 	 */
-	Status = XIntc_Connect (&InterruptController, IIC_INTR_ID, (XInterruptHandler) XIic_InterruptHandler, IicInstPtr);
-	if (Status != XST_SUCCESS) return XST_FAILURE;
-
-	/*
-	 * Start the interrupt controller so interrupts are enabled for all
-	 * devices that cause interrupts.
-	 */
-	Status = XIntc_Start(&InterruptController, XIN_REAL_MODE);
-	if (Status != XST_SUCCESS) return XST_FAILURE;
-
-	/*
-	 * Enable the interrupts for the IIC device.
-	 */
-	XIntc_Enable(&InterruptController, IIC_INTR_ID);
+	XIic_InterruptHandler(IicInstPtr);
 
 	/*
 	 * Initialize the exception table.
@@ -433,7 +407,7 @@ static int SetupInterruptSystem(XIic * IicInstPtr)
 	/*
 	 * Register the interrupt controller handler with the exception table.
 	 */
-	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler) XIntc_InterruptHandler, &InterruptController);
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler) XScuGic_InterruptHandler, &InterruptController);
 
 	/*
 	 * Enable non-critical exceptions.
