@@ -120,7 +120,7 @@ float conjugateQ(float q[])
 	printf("\nConjugate of Quaternion Z: %f", q[3]);
 }
 
-void slerpQ(float q1[], float q2[] )
+void slerpQ(float q1[], float q2[], float t )
 {
 	float resultQ[4];
 	
@@ -270,7 +270,7 @@ void rotationNewMatrix(float vectNorth[], float vectEast[], float vectDown[])
 	
 	multiplyQ(q1, q2);
 	//normalizeQ(q);
-	//slerpQ(q1, q2);
+	slerpQ(q1, q2, 0.5);
 	
 	printf("\nW:%f \n",w);
 	printf("X:%f \n",x);
