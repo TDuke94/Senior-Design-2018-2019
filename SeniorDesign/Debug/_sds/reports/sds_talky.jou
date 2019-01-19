@@ -1,0 +1,22 @@
+(c) Copyright 2012-2018 Xilinx, Inc. All Rights Reserved.
+#-----------------------------------------------------------
+# Tool version  : sdscc 2018.2 SW Build 2258646 on Thu Jun 14 20:03:40 MDT 2018
+# Start time    : Fri Jan 18 14:26:59 EST 2019
+# Command line  : sdscc -Wall -O0 -g -I../src -I/home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp -c -fmessage-length=0 -MTsrc/talky.o -MMD -MP -MFsrc/talky.d -MTsrc/talky.o -o src/talky.o ../src/talky.c -sds-sys-config FreeRTOS -sds-proc FreeRTOS -sds-pf /home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20
+# Log file      : /home/timothyduke/workspace/SeniorDesign/Debug/_sds/reports/sds_talky.log
+# Journal file  : /home/timothyduke/workspace/SeniorDesign/Debug/_sds/reports/sds_talky.jou
+# Report file   : /home/timothyduke/workspace/SeniorDesign/Debug/_sds/reports/sds_talky.rpt
+#-----------------------------------------------------------
+
+#-----------------------------------------------------------
+# This file contains undocumented internal commands and is
+# provided for diagnostic purposes. To reproduce the results
+# of this run, please run the sdscc command line above again.
+#-----------------------------------------------------------
+
+# Create data motion intermediate representation
+/home/timothyduke/Documents/SDx/2018.2/bin/clang_wrapper -I../src -I/home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp -Wall -g -fmessage-length=0 -MMD -MP -D __SDSCC__ -target arm-none-eabi -mcpu=cortex-a9 -mfpu=vfpv3 -O0 -g    -I /home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I /home/timothyduke/Documents/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I /home/timothyduke/Documents/Vivado/2018.2/include   -I/home/timothyduke/Documents/SDK/2018.2/gnu/aarch32/lin/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/7.2.1/include -I/home/timothyduke/Documents/SDK/2018.2/gnu/aarch32/lin/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/7.2.1/include-fixed -I/home/timothyduke/Documents/SDK/2018.2/gnu/aarch32/lin/gcc-arm-none-eabi/arm-none-eabi/include -I/home/timothyduke/Documents/SDK/2018.2/gnu/aarch32/lin/gcc-arm-none-eabi/arm-none-eabi/libc/usr/include -emit-llvm -S /home/timothyduke/workspace/SeniorDesign/src/talky.c -o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.llvm/src/talky.s
+# Compiling /home/timothyduke/workspace/SeniorDesign/src/talky.c
+arm-none-eabi-gcc -c -I../src -I/home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp -Wall -O0 -g -fmessage-length=0 -MMD -MP -D __SDSCC__ -MT/home/timothyduke/workspace/SeniorDesign/Debug/src/talky.o -MF/home/timothyduke/workspace/SeniorDesign/Debug/src/talky.d -MT/home/timothyduke/workspace/SeniorDesign/Debug/src/talky.o -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I /home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I /home/timothyduke/Documents/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I /home/timothyduke/Documents/Vivado/2018.2/include /home/timothyduke/workspace/SeniorDesign/src/talky.c -o src/talky.o
+arm-none-eabi-objcopy --add-section .xdsdata=/home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/talky.o.xml src/talky.o
+# sdscc completed at Fri Jan 18 14:27:02 EST 2019

@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2018.2 (64-bit)
+# SW Build 2258646 on Thu Jun 14 20:02:38 MDT 2018
+# IP Build 2256618 on Thu Jun 14 22:10:49 MDT 2018
+# Start of session at: Fri Jan 18 14:47:41 2019
+# Process ID: 18225
+# Current directory: /home/timothyduke/workspace/SeniorDesign/Debug/_sds/p0/vivado
+# Command line: vivado -mode batch -notrace -source /home/timothyduke/workspace/SeniorDesign/Debug/_sds/p0/vivado/ipirun.tcl -messageDb /home/timothyduke/workspace/SeniorDesign/Debug/_sds/p0/vivado/vivado.pb
+# Log file: /home/timothyduke/workspace/SeniorDesign/Debug/_sds/p0/vivado/vivado.log
+# Journal file: /home/timothyduke/workspace/SeniorDesign/Debug/_sds/p0/vivado/vivado.jou
+#-----------------------------------------------------------
+source /home/timothyduke/workspace/SeniorDesign/Debug/_sds/p0/vivado/ipirun.tcl -notrace

@@ -1,2 +1,0 @@
-Compiling (top level synthesis checkpoint) dynamic region
-Log file: C:/Users/TimothyDuke/workspace/ArtyFreeTest/Debug/_sds/p0/vivado/prj/prj.runs/synth_1/runme.log

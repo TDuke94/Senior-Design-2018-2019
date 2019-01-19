@@ -1,0 +1,11 @@
+#-----------------------------------------------------------
+# hsi v2018.2 (64-bit)
+# SW Build 2258646 on Thu Jun 14 20:02:38 MDT 2018
+# 
+# Start of session at: Fri Jan 18 15:32:45 2019
+# Process ID: 22436
+# Current directory: /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/standalone_bsp
+# Command line: hsi -mode batch -notrace -quiet -source /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/standalone_bsp/create_bsp.tcl
+# Log file: /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/standalone_bsp/hsi.log
+# Journal file: /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/standalone_bsp/hsi.jou
+#-----------------------------------------------------------

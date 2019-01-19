@@ -1,0 +1,297 @@
+<ENTRY>
+{
+    "EntryID": "1",
+    "Type": "CmdStep",
+    "DateTimestamp": "2019-Jan-18 14:47:39.049000",
+    "TimestampMillis": "53259049",
+    "Payload": {
+        "CmdStepID": "d04e4c80-8da5-448c-a5e9-428851e7226f",
+        "Command": "vpl",
+        "LogFile": "\/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0\/vivado\/vivado.steps.log",
+        "CommandLine": "\/home\/timothyduke\/Documents\/SDx\/2018.2\/bin\/unwrapped\/lnx64.o\/vpl --iprepo \/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/iprepo\/repo --iprepo \/home\/timothyduke\/Documents\/SDx\/2018.2\/data\/ip\/xilinx --platform \/home\/timothyduke\/workspace\/Arty_Z7_20\/export\/Arty_Z7_20\/Arty_Z7_20.xpfm --temp_dir \/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0 --output_dir \/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0\/vpl --input_file \/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0\/.xsd\/top.bd.tcl --target hw --save_temps --kernels none --webtalk_flag SDSoC --remote_ip_cache \/home\/timothyduke\/workspace\/ip_cache --xp param:compiler.deleteDefaultReportConfigs=false ",
+        "OptionArgs": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "2",
+    "Type": "Status",
+    "DateTimestamp": "2019-Jan-18 14:47:39.049000",
+    "TimestampMillis": "53259049",
+    "Payload": {
+        "CmdStepID": "d04e4c80-8da5-448c-a5e9-428851e7226f",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "3",
+    "Type": "SubCmdStep",
+    "DateTimestamp": "2019-Jan-18 14:47:40.179000",
+    "TimestampMillis": "53260179",
+    "Payload": {
+        "CmdStepID": "1a11752c-2800-4eb7-b3e9-8fef1339e553",
+        "Command": "vivado",
+        "LogFile": "$LOGDIR\/..\/vivado\/vivado.log",
+        "TransactionLogFile": "",
+        "CommandLine": "\/home\/timothyduke\/Documents\/Vivado\/2018.2\/bin\/vivado -mode batch -notrace -source \/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0\/vivado\/ipirun.tcl -messageDb \/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0\/vivado\/vivado.pb",
+        "OptionArgs": [
+            "-mode",
+            "batch",
+            "-notrace",
+            "-source",
+            "\/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0\/vivado\/ipirun.tcl",
+            "-messageDb",
+            "\/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0\/vivado\/vivado.pb"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "4",
+    "Type": "Status",
+    "DateTimestamp": "2019-Jan-18 14:47:40.179000",
+    "TimestampMillis": "53260179",
+    "Payload": {
+        "CmdStepID": "1a11752c-2800-4eb7-b3e9-8fef1339e553",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "5",
+    "Type": "Status",
+    "DateTimestamp": "2019-Jan-18 14:52:56.949000",
+    "TimestampMillis": "53576949",
+    "Payload": {
+        "CmdStepID": "1a11752c-2800-4eb7-b3e9-8fef1339e553",
+        "Status": "Passed"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "6",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.960000",
+    "TimestampMillis": "53576960",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/synth_1\/Arty_Z7_20_wrapper_utilization_synth.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_UTILIZATION",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "7",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.960000",
+    "TimestampMillis": "53576960",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_drc_opted.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_DRC",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "8",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_io_placed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_IO",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "9",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_utilization_placed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_UTILIZATION",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "10",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_utilization_placed.rpt",
+        "Type": "TEXT",
+        "ReportType": "KERNEL_UTILIZATION_PLACEMENT",
+        "KernelName": "\/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "11",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_control_sets_placed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_CONTROL_SETS",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "12",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_drc_routed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_DRC",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "13",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_methodology_drc_routed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_METHODOLOGY",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "14",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_power_routed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_POWER",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "15",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_route_status.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_ROUTE_STATUS",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "16",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_timing_summary_routed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_TIMING_SUMMARY",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "17",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.961000",
+    "TimestampMillis": "53576961",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_incremental_reuse_routed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_INCREMENTAL_REUSE",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "18",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.962000",
+    "TimestampMillis": "53576962",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_clock_utilization_routed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_CLOCK_UTILIZATION",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "19",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.962000",
+    "TimestampMillis": "53576962",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_clock_utilization_routed.rpt",
+        "Type": "TEXT",
+        "ReportType": "KERNEL_UTILIZATION_ROUTE",
+        "KernelName": "\/home\/timothyduke\/workspace\/SeniorDesign\/Debug\/_sds\/p0\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_clock"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "20",
+    "Type": "Report",
+    "DateTimestamp": "2019-Jan-18 14:52:56.962000",
+    "TimestampMillis": "53576962",
+    "Payload": {
+        "File": "$LOGDIR\/..\/vivado\/prj\/prj.runs\/impl_1\/Arty_Z7_20_wrapper_bus_skew_routed.rpt",
+        "Type": "TEXT",
+        "ReportType": "GLOBAL_REPORT_BUS_SKEW",
+        "KernelName": ""
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "21",
+    "Type": "Status",
+    "DateTimestamp": "2019-Jan-18 14:52:57.003000",
+    "TimestampMillis": "53577003",
+    "Payload": {
+        "CmdStepID": "d04e4c80-8da5-448c-a5e9-428851e7226f",
+        "Status": "Passed"
+    }
+}
+</ENTRY>

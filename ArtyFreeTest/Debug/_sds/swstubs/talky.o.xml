@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xd:data xmlns:xd="http://www.xilinx.com/xd">
-  <xd:source name="talky.c" compiler="gcc" objfile="src/talky.o" srcpath="C:/Users/TimothyDuke/workspace/ArtyFreeTest/src" flags="-IC:/Users/TimothyDuke/workspace/ArtyFreeTest/src -IC:/Users/TimothyDuke/workspace/ArtyFreeTest/src -IC:/Users/TimothyDuke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp -Wall -O0 -g -fmessage-length=0 -MMD -MP -D __SDSCC__" is_debug="1"/>
-</xd:data>

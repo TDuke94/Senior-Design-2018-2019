@@ -1,0 +1,2 @@
+Compiling (bitstream) accelerator binary: bin
+Log file: /home/timothyduke/workspace/SeniorDesign/Debug/_sds/p0/vivado/prj/prj.runs/impl_1/runme.log

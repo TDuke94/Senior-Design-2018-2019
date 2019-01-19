@@ -1,0 +1,2 @@
+creating FPGA bitstream. 
+Log file:/home/timothyduke/workspace/SeniorDesign/Debug/_sds/p0/vivado/vivado.log

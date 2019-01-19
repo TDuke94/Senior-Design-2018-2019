@@ -1,0 +1,12 @@
+/* /home/timothyduke/workspace/SeniorDesign/Debug/_sds/p0/.boot/boot.bif */
+/* Command to create bitstream .bin file:       */
+/*   bootgen -image <bif_file> -split bin -w    */
+/* Command to create BOOT.BIN file:             */
+/*   bootgen  -image <bif_file> -w -o i BOOT.BIN */
+//arch = zynq; split = false; format = BIN
+the_ROM_image:
+{
+  [bootloader]/home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/boot/fsbl.elf
+  /home/timothyduke/workspace/SeniorDesign/Debug/SeniorDesign.elf.bit
+  /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/SeniorDesign.elf
+}

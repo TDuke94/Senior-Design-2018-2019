@@ -1,0 +1,8 @@
+15:40:21 **** Incremental Build of configuration Debug for project SeniorDesign ****
+make pre-build main-build 
+sdsoc_make_clean Debug
+ 
+make: Nothing to be done for 'main-build'.
+
+15:40:22 Build Finished (took 423ms)
+

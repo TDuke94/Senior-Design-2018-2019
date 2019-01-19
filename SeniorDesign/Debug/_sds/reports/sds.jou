@@ -1,0 +1,86 @@
+(c) Copyright 2012-2018 Xilinx, Inc. All Rights Reserved.
+#-----------------------------------------------------------
+# Tool version  : sds++ 2018.2 SW Build 2258646 on Thu Jun 14 20:03:40 MDT 2018
+# Start time    : Fri Jan 18 15:39:30 EST 2019
+# Command line  : sds++ --remote_ip_cache /home/timothyduke/workspace/ip_cache -o SeniorDesign.elf ./src/QueueTest.o ./src/dispatch.o ./src/main.o ./src/talky.o -dmclkid 11 -sds-sys-config FreeRTOS -sds-proc FreeRTOS -sds-pf /home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20
+# Log file      : /home/timothyduke/workspace/SeniorDesign/Debug/_sds/reports/sds.log
+# Journal file  : /home/timothyduke/workspace/SeniorDesign/Debug/_sds/reports/sds.jou
+# Report file   : /home/timothyduke/workspace/SeniorDesign/Debug/_sds/reports/sds.rpt
+#-----------------------------------------------------------
+
+#-----------------------------------------------------------
+# This file contains undocumented internal commands and is
+# provided for diagnostic purposes. To reproduce the results
+# of this run, please run the sds++ command line above again.
+#-----------------------------------------------------------
+
+# Removing implementation files from previous run
+# Analyzing object files
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo /home/timothyduke/workspace/SeniorDesign/Debug/src/QueueTest.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata /home/timothyduke/workspace/SeniorDesign/Debug/src/QueueTest.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata /home/timothyduke/workspace/SeniorDesign/Debug/src/QueueTest.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/QueueTest.o.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo /home/timothyduke/workspace/SeniorDesign/Debug/src/dispatch.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata /home/timothyduke/workspace/SeniorDesign/Debug/src/dispatch.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata /home/timothyduke/workspace/SeniorDesign/Debug/src/dispatch.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/dispatch.o.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo /home/timothyduke/workspace/SeniorDesign/Debug/src/main.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata /home/timothyduke/workspace/SeniorDesign/Debug/src/main.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata /home/timothyduke/workspace/SeniorDesign/Debug/src/main.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/main.o.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdinfo=alloc --only-section=.xdinfo /home/timothyduke/workspace/SeniorDesign/Debug/src/talky.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/xdinfo.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xddata=alloc --only-section=.xddata /home/timothyduke/workspace/SeniorDesign/Debug/src/talky.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/xddata.xml
+arm-none-eabi-objcopy -O binary --set-section-flags .xdsdata=alloc --only-section=.xdsdata /home/timothyduke/workspace/SeniorDesign/Debug/src/talky.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.data/talky.o.xml
+/home/timothyduke/Documents/SDx/2018.2/bin/build_xd_ip_db -ip_search 0  -sds-pf /home/timothyduke/workspace/SeniorDesign/Debug/.Xil/Arty_Z7_20.hpfm    -o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.cdb/xd_ip_db.xml  
+# Generating data motion network
+/home/timothyduke/Documents/SDx/2018.2/bin/llvm-link -o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.llvm/sds_all.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.llvm/./src/QueueTest.s /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.llvm/./src/dispatch.s /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.llvm/./src/main.s /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.llvm/./src/talky.s
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.llvm
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.llvm
+/home/timothyduke/Documents/SDx/2018.2/bin/XidanePass  --platform Arty_Z7_20  --dmclkid 11  --repo /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.cdb/xd_ip_db.xml  --dmdb /home/timothyduke/Documents/SDx/2018.2/data/DM.db   -os freertos -processor cortex-a9 -partition 0  
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+# Skipping block diagram (BD), address map, port information and device registration for partition 0
+# Rewrite caller functions
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+# Prepare hardware access API functions
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+# Create accelerator stub functions
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs
+# Compile hardware access API functions
+arm-none-eabi-gcc   -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I /home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I /home/timothyduke/Documents/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I /home/timothyduke/Documents/Vivado/2018.2/include -c  /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/portinfo.c
+arm-none-eabi-g++  -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I /home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I /home/timothyduke/Documents/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I /home/timothyduke/Documents/Vivado/2018.2/include -c  /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/cf_stub.c
+arm-none-eabi-ar crs /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/libxlnk_stub.a /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/portinfo.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/cf_stub.o
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs
+# Compile accelerator stub functions
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs
+arm-none-eabi-ar crs /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/libSeniorDesign.a /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/portinfo.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/cf_stub.o 
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+# Enable generation of hardware programming files
+# Enable generation of boot files
+cd _sds/p0/.cf_work
+/home/timothyduke/Documents/SDx/2018.2/bin/cf2sw  -i /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.llvm/apsys_0.xml  -r /home/timothyduke/workspace/SeniorDesign/Debug/_sds/.cdb/xd_ip_db.xml  -a address_map.xml  -pollMode 0 -mc
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+# Software tracing enabled
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs
+# Compile hardware access API functions
+arm-none-eabi-gcc   -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I /home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I /home/timothyduke/Documents/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I /home/timothyduke/Documents/Vivado/2018.2/include -c  /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/portinfo.c
+arm-none-eabi-g++  -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -I /home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/inc/include_bsp  -I /home/timothyduke/Documents/SDx/2018.2/target/aarch32-none/include  -D HLS_NO_XIL_FPO_LIB  -I /home/timothyduke/Documents/Vivado/2018.2/include -c  /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/cf_stub.c
+arm-none-eabi-ar crs /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/libxlnk_stub.a /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/portinfo.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/cf_stub.o
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs
+arm-none-eabi-ar crs /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/libSeniorDesign.a /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/portinfo.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/cf_stub.o 
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs
+cd /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/standalone_bsp
+/home/timothyduke/Documents/SDK/2018.2/bin/hsi  -mode batch -notrace -quiet -source /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/standalone_bsp/create_bsp.tcl
+# Create board support package library
+/home/timothyduke/Documents/SDK/2018.2/bin/hsi  -mode batch -notrace -quiet -source /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/standalone_bsp/create_bsp_post.tcl
+cd /home/timothyduke/workspace/SeniorDesign/Debug
+# Link application ELF file
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,--build-id=none -specs=/home/timothyduke/Documents/SDx/2018.2/data/toolchain/aarch32-none.spec -Wl,-T -Wl,/home/timothyduke/workspace/Arty_Z7_20/export/Arty_Z7_20/sw/FreeRTOS/FreeRTOS/lscript.ld   /home/timothyduke/workspace/SeniorDesign/Debug/src/QueueTest.o /home/timothyduke/workspace/SeniorDesign/Debug/src/dispatch.o /home/timothyduke/workspace/SeniorDesign/Debug/src/main.o /home/timothyduke/workspace/SeniorDesign/Debug/src/talky.o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/portinfo.o  -L /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/standalone_bsp/ps7_cortexa9_0/lib  -L /home/timothyduke/Documents/SDx/2018.2/target/aarch32-none/lib -L/home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs -Wl,--start-group -lxilffs -lgcc -lc -lstdc++ -Wl,--end-group -Wl,--start-group   -lfreertos -lxilffs -lxil  -lgcc -lc  -lsds_lib -lxlnk_stub -lgcc -lc -Wl,--end-group -o /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/SeniorDesign.elf
+arm-none-eabi-objcopy -R .xdinfo -R .xddata -R .xdasm -R .xdfcnmap -R .xdhlscore -R .xdif -R .xdparams -R .xdcore -R .xdrepo -R .xdsdata -R .xdpp /home/timothyduke/workspace/SeniorDesign/Debug/_sds/swstubs/SeniorDesign.elf
+# All user specified timing constraints are met.
+# sds++ completed at Fri Jan 18 15:40:03 EST 2019
