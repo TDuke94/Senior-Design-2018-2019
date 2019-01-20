@@ -21,13 +21,16 @@
 #include "msp430f5529.h"
 #include "driverlib.h"
 #include "msp430_i2c.h"
+#include "inv_mpu.h"
+#include "HAL_PMM.h"
+#include "hal_outputs.h"
+#include "msp430_interrupt.h"
 
 typedef unsigned char uint_8t;
 
 // function prototypes
 void ClockInit(void);
 void Pin_Init(void);
-void I2C_Init(void);
 void SBIT(void);
 void IMU_Startup_Poll(void);
 void Zynq_Startup_Poll(void);
@@ -47,6 +50,56 @@ uint_8t TXByteCtr;
 uint_8t txData[] = {0x00};
 uint_8t SlaveCount = 0;
 uint_8t SwitchCount = 0;
+
+#define ACCEL_ON        (0x01)
+#define GYRO_ON         (0x02)
+#define COMPASS_ON      (0x04)
+
+typedef struct IMU_Data
+{
+    short accel[3];
+    short gyro[3];
+    short mag[3];
+} IMU_Data;
+
+struct rx_s {
+    unsigned char header[3];
+    unsigned char cmd;
+};
+
+struct hal_s {
+    unsigned char lp_accel_mode;
+    unsigned char sensors;
+    unsigned char dmp_on;
+    unsigned char wait_for_tap;
+    volatile unsigned char new_gyro;
+    unsigned char motion_int_mode;
+    unsigned long no_dmp_hz;
+    unsigned long next_pedo_ms;
+    unsigned long next_temp_ms;
+    unsigned long next_compass_ms;
+    unsigned int report;
+    unsigned short dmp_features;
+    struct rx_s rx;
+};
+
+struct hal_s hal = {0};
+
+struct platform_data_s {
+    signed char orientation[9];
+};
+
+static struct platform_data_s gyro_pdata = {
+    .orientation = { 1, 0, 0,
+                     0, 1, 0,
+                     0, 0, 1}
+};
+
+static struct platform_data_s compass_pdata = {
+    .orientation = { 0, 1, 0,
+                     1, 0, 0,
+                     0, 0,-1}
+};
 
 /*
  * Constants for Addresses
@@ -68,8 +121,9 @@ void main(void)
     Pin_Init();
 
     // Initialize I2C as receiver
-    //I2C_Init();
     msp430_i2c_enable();
+    //msp430_int_init();
+    msp430_clock_init(12000000L, 2);
 
     // perform SBIT
     SBIT();
@@ -98,28 +152,6 @@ void Pin_Init(void)
 }
 
 /*
- * I2C Transmit Initialization Function
- *
- * Code is used from the TI example for initialization of euxci b as master of several slaves
- *
- */
-void I2C_Init(void)
-{
-    // reset state
-    UCB0CTLW0 |= 0x01;
-
-    // (UCMode 3:I2C) (Master Mode) (UCSSEL 1:ACLK, 2,3:SMCLK)
-    //UCB0CTLW0 |= UCMODE_3 | UCMST | UCSSEL_3;
-    UCB0CTLW0 |= 0x0FC0;
-
-    // Clock divider = 8  (SMCLK @ 1.048 MHz / 8 = 131 KHz)
-    UCB0BRW = 8;
-
-    // Exit the reset mode
-    UCB0CTLW0 ^= 0x01;
-}
-
-/*
  * Startup Built-In-Test
  *
  * This test verifies functionality of the MSP430 device upon startup
@@ -129,6 +161,11 @@ void SBIT(void)
     // Tests Go Here
 }
 
+static void gyro_data_ready_cb(void)
+{
+    hal.new_gyro = 1;
+}
+
 /*
  * IMU Startup Poll
  *
@@ -136,11 +173,17 @@ void SBIT(void)
  */
 void IMU_Startup_Poll(void)
 {
-    char address, reg;
-    int data;
+    unsigned char address, reg, data, accel_fsr, more;
+    unsigned short gyro_rate, gyro_fsr, compass_fsr;
+    int Status;
+    unsigned long timestamp;
 
-    address = ZYNQ_ADDRESS;
-    reg = ZYNQ_REGISTER;
+    struct int_param_s parameters;
+
+    IMU_Data output;
+
+    address = IMU_ADDRESS_1;
+    reg = IMU_REGISTER_1;
 
     data = 0x00;
 
@@ -148,9 +191,29 @@ void IMU_Startup_Poll(void)
     SlaveCount = 0;
     SwitchCount = 0;
 
+    parameters.cb = gyro_data_ready_cb;
+    parameters.pin = INT_PIN_P20;
+    parameters.lp_exit = INT_EXIT_LPM0;
+    parameters.active_low = 1;
+
+    Status = mpu_init(NULL);
+    if (Status) return;
+
+    mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
+
+    mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL);
+    mpu_set_sample_rate(1000);
+
+    mpu_set_compass_sample_rate(1000 / 10);
+
+    mpu_get_sample_rate(&gyro_rate);
+    mpu_get_gyro_fsr(&gyro_fsr);
+    mpu_get_accel_fsr(&accel_fsr);
+    mpu_get_compass_fsr(&compass_fsr);
+
     while (1)
     {
-        msp430_i2c_read(address, reg, 1, data);
+        mpu_read_fifo(output.gyro, output.accel, &timestamp, INV_XYZ_GYRO|INV_XYZ_ACCEL, &more);
 
         if(SlaveCount >= SLAVE_NUMBER)
         {
