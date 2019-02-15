@@ -21,6 +21,7 @@
 #include "msp430f5529.h"
 #include "driverlib.h"
 #include "msp430_i2c.h"
+#include "msp430_clock.h"
 #include "inv_mpu.h"
 #include "HAL_PMM.h"
 #include "hal_outputs.h"
@@ -34,22 +35,6 @@ void Pin_Init(void);
 void SBIT(void);
 void IMU_Startup_Poll(void);
 void Zynq_Startup_Poll(void);
-
-volatile unsigned char TXData;
-
-/*
- * Constants:
- *      IMU Address: 110100x (define x as 0, tied to ground)
- *      I2C Switches
- *      SlaveCounter
- *      Slave Number
- */
-uint_8t IMU_ADDRESS = 0x68; // maybe make this #define
-uint_8t I2C_Switch_Address[] = {0x00};
-uint_8t TXByteCtr;
-uint_8t txData[] = {0x00};
-uint_8t SlaveCount = 0;
-uint_8t SwitchCount = 0;
 
 #define ACCEL_ON        (0x01)
 #define GYRO_ON         (0x02)
@@ -101,29 +86,20 @@ static struct platform_data_s compass_pdata = {
                      0, 0,-1}
 };
 
-/*
- * Constants for Addresses
- */
-#define IMU_ADDRESS_1 0xD0
-#define IMU_REGISTER_1 0x3D
-#define ZYNQ_ADDRESS 0xE0
-#define ZYNQ_REGISTER 0x0C
-
+#define ZYNQ_ADDRESS 0x70
 #define SLAVE_NUMBER 10
-#define CS_SMCLK_DESIRED_FREQUENCY_IN_KHZ   1000
-#define CS_SMCLK_FLLREF_RATIO   30
 
 void main(void)
 {
+
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
     // Initialize I/O Pins
     Pin_Init();
 
     // Initialize I2C as receiver
+    msp430_clock_init(20000000L, 2);
     msp430_i2c_enable();
-    //msp430_int_init();
-    msp430_clock_init(12000000L, 2);
 
     // perform SBIT
     SBIT();
@@ -161,11 +137,6 @@ void SBIT(void)
     // Tests Go Here
 }
 
-static void gyro_data_ready_cb(void)
-{
-    hal.new_gyro = 1;
-}
-
 /*
  * IMU Startup Poll
  *
@@ -173,28 +144,16 @@ static void gyro_data_ready_cb(void)
  */
 void IMU_Startup_Poll(void)
 {
-    unsigned char address, reg, data, accel_fsr, more;
+    unsigned char address, reg, accel_fsr, more;
     unsigned short gyro_rate, gyro_fsr, compass_fsr;
-    int Status;
+    int Status, i;
     unsigned long timestamp;
 
-    struct int_param_s parameters;
+    unsigned char timeArray[8];
+    unsigned char outArray[6];
+    unsigned char inArray[5];
 
     IMU_Data output;
-
-    address = IMU_ADDRESS_1;
-    reg = IMU_REGISTER_1;
-
-    data = 0x00;
-
-    // verify initialized to 0
-    SlaveCount = 0;
-    SwitchCount = 0;
-
-    parameters.cb = gyro_data_ready_cb;
-    parameters.pin = INT_PIN_P20;
-    parameters.lp_exit = INT_EXIT_LPM0;
-    parameters.active_low = 1;
 
     Status = mpu_init(NULL);
     if (Status) return;
@@ -213,9 +172,27 @@ void IMU_Startup_Poll(void)
 
     while (1)
     {
-        mpu_read_fifo(output.gyro, output.accel, &timestamp, INV_XYZ_GYRO|INV_XYZ_ACCEL, &more);
+        mpu_get_accel_reg(output.gyro, &timestamp);
+        mpu_get_gyro_reg(output.accel, &timestamp);
+        mpu_get_compass_reg(output.mag, &timestamp);
 
-        if(SlaveCount >= SLAVE_NUMBER)
+        // next set of bytes is raw data from IMU
+        for (i = 0; i < 3; i++)
+        {
+            outArray[(2 * i)] = output.gyro[i] >> 8;
+            outArray[(2 * i) + 1] = (output.gyro[i] & 0xff);
+            outArray[(2 * i) + 6] = output.accel[i] >> 8;
+            outArray[(2 * i) + 7] = (output.accel[i] & 0xff);
+            outArray[(2 * i) + 12] = output.mag[i] >> 8;
+            outArray[(2 * i) + 13] = (output.mag[i] & 0xff);
+        }
+
+        msp430_i2c_write(ZYNQ_ADDRESS, 0, 18, outArray);
+
+        // check a status word
+        //msp430_i2c_read(ZYNQ_ADDRESS, 0, 5, inArray);
+
+        if(0 >= SLAVE_NUMBER)
         {
             // We have spoken to all of the IMUs
             break;
