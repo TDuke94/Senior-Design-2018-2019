@@ -21,7 +21,7 @@
 #define PI 3.14159265
 
 
-float crossProduct(float vect1[], float vect2[], float cross_P[]) 
+float crossProduct(float *vect1, float *vect2, float *cross_P) 
 { 
 	cross_P[0] = vect1[1] * vect2[2] - vect1[2] * vect2[1]; 
 	cross_P[1] = vect1[0] * vect2[2] - vect1[2] * vect2[0]; 
@@ -52,7 +52,7 @@ float copysign_zero(float x,float y)
 		return 0;
 }
 
-void rotationMatrix(float vectNorth[], float vectEast[], float vectDown[]) 
+void rotationMatrix(float *vectNorth, float *vectEast, float *vectDown) 
 {
 	float rMat [3][3];
 	
@@ -86,7 +86,7 @@ void rotationMatrix(float vectNorth[], float vectEast[], float vectDown[])
  * This function normalizes the quaternion passed to it
  * The value passed in IS MODIFIED
  */
-void normalizeQ (float q[])
+void normalizeQ (float *q)
 {
 	float mag;
 	
@@ -106,7 +106,7 @@ void normalizeQ (float q[])
 }
 
 // muliplication of quartenions 
-void multiplyQ(float q1[], float q2[])
+void multiplyQ(float *q1, float *q2)
 {
 	
 		float resultQ[4];
@@ -123,7 +123,7 @@ void multiplyQ(float q1[], float q2[])
 		 
 }
 
-float conjugateQ(float q[])
+float conjugateQ(float *q)
 {
 	q[1] = -q[1];
 	q[2] = -q[2];
@@ -135,7 +135,7 @@ float conjugateQ(float q[])
 	printf("\nConjugate of Quaternion Z: %f", q[3]);
 }
 
-void slerpQ(float q1[], float q2[], float t )
+void slerpQ(float *q1, float *q2, float t )
 {
 	float resultQ[4];
 	
@@ -198,7 +198,7 @@ void slerpQ(float q1[], float q2[], float t )
 	
 }
 
-float subtractQ(float q1[], float q2[], float resultQ[])
+float subtractQ(float *q1, float *q2, float *resultQ)
 {
 		resultQ[0] = q1[0]-q2[2];
 		resultQ[1] = q1[1]-q2[1];
@@ -210,7 +210,7 @@ float subtractQ(float q1[], float q2[], float resultQ[])
 	//	printf("\nSubtraction of Quaternions Y: %f", resultQ[2]);
 	//	printf("\nSubtraction of Quaternions Z: %f", resultQ[3]);
 }
-void toAxisAngle(float q[], float axis[], float *angle)
+void toAxisAngle(float *q, float *axis, float *angle)
 {
 	normalizeQ(q);
 	
@@ -243,7 +243,7 @@ void toAxisAngle(float q[], float axis[], float *angle)
 		printf("Vector Z component: %f\n",axis[2]);
 	
 }
-void toAngularVelocity(float q[], float dt)
+void toAngularVelocity(float *q, float dt)
 {
 	float vect[3];
 	//float q[4];
@@ -276,7 +276,7 @@ void toAngularVelocity(float q[], float dt)
 	
 }
 
-void vectorToMatrix(float vectNorth[], float vectEast[], float vectDown[], float rMat[][3])
+void vectorToMatrix(float *vectNorth, float *vectEast, float *vectDown, float rMat[][3])
 {
 //	float rMat [3][3];
 	
@@ -293,7 +293,7 @@ void vectorToMatrix(float vectNorth[], float vectEast[], float vectDown[], float
 }
 // should really only take in a matrix to do these calculations to turn it into a quaternion.
 //void rotationNewMatrix(float vectNorth[], float vectEast[], float vectDown[]) 
-void fromMatrix(float rMat[][3], float quaternion[])
+void fromMatrix(float rMat[][3], float *quaternion)
 {
 	/*
 	float rMat [3][3];
@@ -449,7 +449,7 @@ float normalizeVect(float vect[], float vecResult[])
 	
 }
 */
-float normalizeVect(float vect[])
+float normalizeVect(float *vect)
 {
 	float w = sqrt( vect[0] * vect[0] + vect[1] * vect[1] + vect[2] * vect[2] );
 	vect[0] /= w;

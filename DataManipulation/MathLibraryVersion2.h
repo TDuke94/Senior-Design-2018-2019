@@ -24,19 +24,19 @@
 
 
 
-float crossProduct(float vect1[], float vect2[], float cross_P[]); 
-void toAxisAngle(float q[], float axis[], float *angle);
-void multiplyQ(float q1[], float q2[]);
-void toAngularVelocity(float q[], float dt);
+float crossProduct(float *vect1, float *vect2, float *cross_P); 
+void toAxisAngle(float *q, float *axis, float *angle);
+void multiplyQ(float *q1, float *q2);
+void toAngularVelocity(float *q, float dt);
 
-void fromMatrix(float rMat[][3], float quaternion[]);
-void vectorToMatrix(float vectNorth[], float vectEast[], float vectDown[], float rMat[][3]);
+void fromMatrix(float rMat[][3], float *quaternion);
+void vectorToMatrix(float *vectNorth, float *vectEast, float *vectDown, float rMat[][3]);
 
-float normalizeVect(float vect[]);
-void normalizeQ (float q[]);
-float conjugateQ(float q[]);
-void slerpQ(float q1[], float q2[], float t);
-void toAxisAngle(float q[], float axis[], float *angle);
+float normalizeVect(float *vect);
+void normalizeQ (float *q);
+float conjugateQ(float *q);
+void slerpQ(float *q1, float *q2, float t);
+void toAxisAngle(float *q, float *axis, float *angle);
 
 
 
