@@ -9,10 +9,10 @@
  * 		Fred D.
  * 		Linnette M.
  *
+ * Header File for I2C receiver manager
+ *
  * Version:
  * 		0.0 - January 19, 2019: Initial revision
- *
- * Header File for I2C receiver manager
  */
 
 /*
@@ -55,6 +55,7 @@
 /*
  * Include Files
  */
+#include "xparameters.h"
 #include "xiic.h"
 #include "xscugic.h"
 #include "xil_exception.h"
@@ -63,7 +64,7 @@
  * Cast Xilinx Device ID's to internal use name
  */
 #define IIC_DEVICE_ID		XPAR_IIC_0_DEVICE_ID
-#define INTC_DEVICE_ID		XPAR_SCUGIC_0_DEVICE_ID
+#define INTC_DEVICE_ID		XPAR_INTC_0_DEVICE_ID
 #define IIC_INTR_ID			XPAR_FABRIC_IIC_0_VEC_ID
 
 /*
@@ -71,11 +72,5 @@
  */
 void I2C_Task(void *parameters);
 int I2CInit(void);
-int SlaveWriteData (u16 ByteCount);
-int SlaveReadData (u8 *BufferPtr, u16 ByteCount);
-static int SetupInterruptSystem (XIic * IicInstPtr);
-static void StatusHandler (XIic *InstancePtr, int Event);
-static void SendHandler (XIic *InstancePtr);
-static void ReceiveHandler (XIic *InstancePtr);
 
 #endif

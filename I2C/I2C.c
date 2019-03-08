@@ -160,31 +160,29 @@ void IMU_Startup_Poll(void)
 
     mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
 
-    mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL);
     mpu_set_sample_rate(1000);
-
     mpu_set_compass_sample_rate(1000 / 10);
-
     mpu_get_sample_rate(&gyro_rate);
+
     mpu_get_gyro_fsr(&gyro_fsr);
     mpu_get_accel_fsr(&accel_fsr);
     mpu_get_compass_fsr(&compass_fsr);
 
     while (1)
     {
-        mpu_get_accel_reg(output.gyro, &timestamp);
-        mpu_get_gyro_reg(output.accel, &timestamp);
+        mpu_get_accel_reg(output.gyro, NULL);
+        mpu_get_gyro_reg(output.accel, NULL);
         mpu_get_compass_reg(output.mag, &timestamp);
 
         // next set of bytes is raw data from IMU
         for (i = 0; i < 3; i++)
         {
-            outArray[(2 * i)] = output.gyro[i] >> 8;
-            outArray[(2 * i) + 1] = (output.gyro[i] & 0xff);
-            outArray[(2 * i) + 6] = output.accel[i] >> 8;
-            outArray[(2 * i) + 7] = (output.accel[i] & 0xff);
-            outArray[(2 * i) + 12] = output.mag[i] >> 8;
-            outArray[(2 * i) + 13] = (output.mag[i] & 0xff);
+            outArray[(2 * i)]       = output.gyro[i] >> 8;
+            outArray[(2 * i) + 1]   = (output.gyro[i] & 0xff);
+            outArray[(2 * i) + 6]   = output.accel[i] >> 8;
+            outArray[(2 * i) + 7]   = (output.accel[i] & 0xff);
+            outArray[(2 * i) + 12]  = output.mag[i] >> 8;
+            outArray[(2 * i) + 13]  = (output.mag[i] & 0xff);
         }
 
         msp430_i2c_write(ZYNQ_ADDRESS, 0, 18, outArray);

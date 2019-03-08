@@ -9,10 +9,11 @@
  * 		Fred D.
  * 		Linnette M.
  *
- * Version:
- * 		0.0 - January 19, 2019: Initial revision
- *
  * I2C receiver manager
+ *
+ * Revision History:
+ * 		0.0 - January 19, 2019: Initial revision
+ * 		1.0 - February 15, 2019: Functional revision - writeback faults remain
  */
 
 /*
@@ -50,26 +51,35 @@
 
 // Include Files - managed within I2C manager.h
 #include "I2C_manager.h"
-#include "QueueTest.h"
+#include "IMU_Pipeline.h"
+#include "MathLibrary.h"
 
 /*
- * I2C Address - bit shifted to right 0xE0 -> 0x70
+ * The following constant defines the address of the IIC device on the IIC bus.
+ * Since the address is only 7 bits, this constant is the address divided by 2.
  */
-#define SLAVE_ADDRESS		0x70
+#define SLAVE_ADDRESS		0x70	/* 0xE0 as an 8 bit number. */
+
+#define RECEIVE_COUNT	18
+#define SEND_COUNT		5
+#define TIME_COUNT		8
 
 /*
- * length for RX/TX
+ * Local Function Prototypes
  */
-#define RECEIVE_COUNT	25
-#define SEND_COUNT		25
+static void StatusHandler (XIic *InstancePtr, int Event);
+static void SendHandler (XIic *InstancePtr);
+static void ReceiveHandler (XIic *InstancePtr);
+static int SetupInterruptSystem (XIic * IicInstPtr);
+int SlaveWriteData (u16 ByteCount);
+int SlaveReadData (u8 *BufferPtr, u16 ByteCount);
 
 /*
  * Global Variables
  */
 
 XIic IicInstance;
-XScuGic InterruptController;
-static XScuGic_Config *GicConfig;
+extern XScuGic xInterruptController;
 
 u8 WriteBuffer[SEND_COUNT];
 u8 ReadBuffer[RECEIVE_COUNT];
@@ -79,6 +89,16 @@ volatile u8 ReceiveComplete;
 
 volatile u8 SlaveRead;
 volatile u8 SlaveWrite;
+
+/*
+ * Full Scale Range - input from the IMUs - used externally in IMU_Pipeline
+ */
+/*
+ * Full Scale Range, input from IMU Data
+ */
+short accel_fsr;
+short gyro_fsr;
+short mag_fsr;
 
 /*
  * I2C_Task
@@ -95,7 +115,7 @@ void I2C_Task(void *parameters)
 	/*
 	 * Queue as output location
 	 */
-	int queueLength, blockSize, DelayFlag, Status, i;
+	int i;
 
 	u8 *outputArray;
 
@@ -112,36 +132,35 @@ void I2C_Task(void *parameters)
 	myQueueData = *((QueueData *) parameters);
 
 	outputQueue = myQueueData.outputQueue;
-	queueLength = myQueueData.queueLength;
-	blockSize = myQueueData.blockSize;
 
-	/*
-	 * I2C Initialization and setup
-	 */
-	Status = I2CInit();
-	if (Status != XST_SUCCESS)
-	{
-		xil_printf("I2C Initialization failed\nabort\n");
-		vTaskDelete(NULL);
-	}
+	vPortFree(parameters);
 
 	for(;;)
 	{
 		/*
-		 * For now, simply call the I2C functions
+		 * Verify Clear
+		 */
+		for (i = 0; i < RECEIVE_COUNT; i++)
+			ReadBuffer[i] = 0;
+
+		/*
+		 * Get Data over I2C
 		 */
 		SlaveReadData(ReadBuffer, RECEIVE_COUNT);
 
 		/*
 		 * Put data into the Queue
 		 */
-
 		outputArray = pvPortMalloc(RECEIVE_COUNT * sizeof(u8));
 
 		for (i = 0; i < RECEIVE_COUNT; i++)
 			outputArray[i] = ReadBuffer[i];
 
-		//xQueueSend(outputQueue, (void *) &outputArray, (TickType_t) 0);
+		/*
+		 * enqueue, if failed, free the pointer so no leak occurs
+		 */
+		if (xQueueSend(outputQueue, &outputArray, (TickType_t) 5) != pdPASS)
+			vPortFree(outputArray);
 
 		/*
 		 * reply over I2C
@@ -149,7 +168,20 @@ void I2C_Task(void *parameters)
 		for (i = 0; i < SEND_COUNT; i++)
 			WriteBuffer[i] = i;
 
-		SlaveWriteData(SEND_COUNT);
+		/*
+		 * Reply - not currently working
+		 */
+		//SlaveWriteData(SEND_COUNT);
+
+		/*
+		 * Failure Moding - de-latch any fail states, recovery
+		 *
+		 * For now, this is empty
+		 */
+		if (FALSE)
+		{
+			// Nothing for now
+		}
 	}
 
 	// never fall off the end
@@ -174,6 +206,9 @@ int I2CInit(void)
 	 * General I2C Setup
 	 */
 
+	// Slave Required
+	XIic_SlaveInclude();
+
 	ConfigPtr = XIic_LookupConfig(IIC_DEVICE_ID);
 	if (ConfigPtr == NULL) return XST_FAILURE;
 
@@ -183,12 +218,9 @@ int I2CInit(void)
 	Status = SetupInterruptSystem (&IicInstance);
 	if (Status != XST_SUCCESS) return XST_FAILURE;
 
-	// Slave Required
-	XIic_SlaveInclude();
-
-	XIic_SetStatusHandler (&IicInstance, &IicInstance, (XIic_StatusHandler) StatusHandler);
-	XIic_SetSendHandler (&IicInstance, &IicInstance, (XIic_StatusHandler) SendHandler);
-	XIic_SetRecvHandler (&IicInstance, &IicInstance, (XIic_StatusHandler) ReceiveHandler);
+	XIic_SetStatusHandler (&IicInstance, (void *) &IicInstance, (XIic_StatusHandler) StatusHandler);
+	XIic_SetSendHandler (&IicInstance, (void *) &IicInstance, (XIic_StatusHandler) SendHandler);
+	XIic_SetRecvHandler (&IicInstance, (void *) &IicInstance, (XIic_StatusHandler) ReceiveHandler);
 
 	Status = XIic_SetAddress(&IicInstance, XII_ADDR_TO_RESPOND_TYPE, SLAVE_ADDRESS);
 	if (Status != XST_SUCCESS) return XST_FAILURE;
@@ -234,12 +266,15 @@ int SlaveReadData(u8 *BufferPtr, u16 ByteCount)
 	/*
 	 * Wait for AAS interrupt and completion of data reception.
 	 */
-	while ((ReceiveComplete) || (XIic_IsIicBusy(&IicInstance) == TRUE)) {
-		if (SlaveRead) {
+	while ((ReceiveComplete) /*|| (XIic_IsIicBusy(&IicInstance) == TRUE) */) {
+		Status = XIic_IsIicBusy(&IicInstance);
+		if (SlaveRead)
+		{
 			XIic_SlaveRecv(&IicInstance, ReadBuffer, RECEIVE_COUNT);
 			SlaveRead = 0;
 		}
 	}
+
 
 	/*
 	 * Disable the Global Interrupt Enable.
@@ -295,12 +330,14 @@ int SlaveWriteData(u16 ByteCount)
 	/*
 	 * Wait for AAS interrupt and transmission to complete.
 	 */
-	while ((TransmitComplete) || (XIic_IsIicBusy(&IicInstance) == TRUE)) {
-		if (SlaveWrite) {
+ 	while ((TransmitComplete) /* || (XIic_IsIicBusy(&IicInstance) == TRUE) */ ) {
+		if (SlaveWrite)
+		{
 			XIic_SlaveSend(&IicInstance, WriteBuffer, SEND_COUNT);
 			SlaveWrite = 0;
 		}
 	}
+
 
 	/*
 	 * Disable the Global Interrupt Enable bit.
@@ -386,34 +423,22 @@ static void ReceiveHandler(XIic *InstancePtr)
 /****************************************************************************/
 static int SetupInterruptSystem(XIic * IicInstPtr)
 {
-	int Status;
+	// maybe do this more carefully
+	XScuGic_SetPriorityTriggerType(&xInterruptController, IIC_INTR_ID, 0xA0, 0x3);
 
-	GicConfig = XScuGic_LookupConfig(INTC_DEVICE_ID);
-	if (GicConfig == NULL) return XST_FAILURE;
+	XScuGic_Connect(&xInterruptController, IIC_INTR_ID , (Xil_ExceptionHandler) XIic_InterruptHandler, IicInstPtr);
 
-	Status = XScuGic_CfgInitialize( &InterruptController, GicConfig, GicConfig->CpuBaseAddress);
-	if (Status != XST_SUCCESS) return XST_FAILURE;
-
-	/*
-	 * I2C Interrupt Function Setup
-	 */
-	XIic_InterruptHandler(IicInstPtr);
-
-	/*
-	 * Initialize the exception table.
-	 */
-	Xil_ExceptionInit();
+	XScuGic_Enable(&xInterruptController, IIC_INTR_ID);
 
 	/*
 	 * Register the interrupt controller handler with the exception table.
 	 */
-	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler) XScuGic_InterruptHandler, &InterruptController);
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler) XScuGic_InterruptHandler, &xInterruptController);
 
 	/*
 	 * Enable non-critical exceptions.
 	 */
 	Xil_ExceptionEnable();
-
 
 	return XST_SUCCESS;
 }

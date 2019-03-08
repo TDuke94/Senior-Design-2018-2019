@@ -32,6 +32,13 @@
 #define MPU9150
 #endif
 
+/*
+ * Setup for I2C bypass
+ */
+#ifndef AK89xx_BYPASS
+#define AK89xx_BYPASS
+#endif
+
 #ifndef MOTION_DRIVER_TARGET_MSP430
 #define MOTION_DRIVER_TARGET_MSP430
 #endif

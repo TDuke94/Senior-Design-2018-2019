@@ -130,10 +130,10 @@ int msp430_i2c_enable(void)
     I2C_MODE();
 
     /* Set to synchronous master mode. */
-    CTL0 = UCMST + UCMODE_3 + UCSYNC;
+    CTL0 = UCMST | UCMODE_3 | UCSYNC;
 
     /* Use sub-master clock. */
-    CTL1 = UCSSEL_2 + UCSWRST;
+    CTL1 = UCSSEL_2 | UCSWRST;
 
     /* Set slave clock frequency to 400kHz. */
     msp430_get_smclk_freq(&smclk);
@@ -183,7 +183,12 @@ int msp430_i2c_write(unsigned char slave_addr,
     /* Populate struct. */
     i2c.state = STATE_WRITING;
     i2c.slave_reg = reg_addr;
-    i2c.slave_reg_written = 0;
+    // handle case where I'm not writing to a register
+    if (i2c.slave_reg == 0)
+        i2c.slave_reg_written = 1;
+    else
+        i2c.slave_reg_written = 0;
+
     i2c.data = (unsigned char*)data;
     i2c.length = length;
 
@@ -267,7 +272,12 @@ int msp430_i2c_read(unsigned char slave_addr,
     /* Populate struct. */
     i2c.state = STATE_READING;
     i2c.slave_reg = reg_addr;
-    i2c.slave_reg_written = 0;
+    // check if I need to write the register to the bus
+    if (i2c.slave_reg == 0)
+         i2c.slave_reg_written = 1;
+     else
+         i2c.slave_reg_written = 0;
+
     i2c.data = data;
     i2c.length = length;
 
@@ -302,6 +312,7 @@ __interrupt void I2C_ISR(void)
         case 4:     /* NAK interrupt. */
             i2c.state = STATE_WAITING;
             CTL1 |= UCTXSTP;
+            while (CTL1 & UCTXSTP);//wait
             break;
         case 10:    /* RX interrupt. */
             IFG &= ~UCRXIFG;

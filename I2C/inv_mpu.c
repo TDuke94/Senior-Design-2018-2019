@@ -2977,13 +2977,20 @@ static int setup_compass(void)
 
     mpu_set_bypass(1);
 
+    /*
+     * The following code does not work - it fails to find the address, which is hard coded as 0x0C
+     */
+
     /* Find compass. Possible addresses range from 0x0C to 0x0F. */
+    /*
     for (akm_addr = 0x0C; akm_addr <= 0x0F; akm_addr++) {
         int result;
         result = i2c_read(akm_addr, AKM_REG_WHOAMI, 1, data);
         if (!result && (data[0] == AKM_WHOAMI))
             break;
     }
+    */
+    akm_addr = 0x0C;
 
     if (akm_addr > 0x0F) {
         /* TODO: Handle this case in all compass-related functions. */
