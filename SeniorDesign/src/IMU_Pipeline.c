@@ -85,7 +85,6 @@ void QMathSetupTask(void *parameters)
 		/*
 		 * Take from Buffer, including RX Condition Checking
 		 */
-		/* legacy version
 		if (uxQueueMessagesWaiting(inputQueue) == 0)
 		{
 			// set delay flag to not waste processor time
@@ -94,14 +93,16 @@ void QMathSetupTask(void *parameters)
 			// re-enter loop
 			continue;
 		}
-		*/
 
-		// alternate version, needs to be tested
+		/* alternate version, needs to be tested
 		if (xQueueReceive (inputQueue, &InBuffer, portMAX_DELAY)!= pdPASS)
 		{
 			DelayFlag = TRUE;
 			continue;
 		}
+		*/
+
+		xQueueReceive (inputQueue, &InBuffer, portMAX_DELAY);
 
 		OutArray = pvPortMalloc(IMU_COUNT * sizeof(IMU_Data_Int *));
 
@@ -151,11 +152,7 @@ void QVectorToQuaternionTask(void *parameters)
 {
 	int DelayFlag, i, j;
 
-	/*
-	IMU_Data_Int ** InArray;
-	*/
-
-	IMU_Data_Int *InArray;
+	IMU_Data_Int **InArray;
 
 	float * OutArray;
 
@@ -201,7 +198,7 @@ void QVectorToQuaternionTask(void *parameters)
 		}
 
 		// clear the array pointer
-		InArray = NULL;
+		//InArray = NULL;
 
 		/*
 		 * Take from Buffer, including RX Condition Checking
@@ -228,8 +225,8 @@ void QVectorToQuaternionTask(void *parameters)
 			for (j = 0; j < 3; j++)
 			{
 				// modified for test
-				vectDown[j] =	(float) InArray[i].accel[j];
-				rawMag[j] 	=	(float) InArray[i].mag[j];
+				vectDown[j] =	(float) InArray[i]->accel[j];
+				rawMag[j] 	=	(float) InArray[i]->mag[j];
 			}
 
 			crossProduct(vectDown, rawMag, vectEast);
@@ -249,7 +246,8 @@ void QVectorToQuaternionTask(void *parameters)
 			for (j = 0; j < 8; j++)
 			{
 				if (j < 3)
-					OutArray[i * 8 + j] = (float) InArray[i].gyro[j];
+					OutArray[i * 8 + j] = (float) InArray[i]->gyro[j];
+				// 3 is reserved for the gyro quaternion 4th component
 				else if (j > 3)
 					OutArray[i * 8 + j] = quaternion[j];
 			}
@@ -354,12 +352,17 @@ void QQuaternionFilterTask(void *parameters)
 
 			fromAngularVelocity(gyroVector, 1 / GYRO_RATE, gyroQuaternion);
 
+			normalizeQ(gyroQuaternion);
+
 			if (FirstFlag == TRUE)
 			{
 				FirstFlag = FALSE;
 
 				for (j = 0; j < 4; j++)
 					gyroAccumulator[i * 4 + j] = gyroQuaternion[j];
+
+				for (j = 0; j < 4; j++)
+					InArray[i * 8 + j] = gyroQuaternion[j];
 			}
 			else
 			{
@@ -367,14 +370,17 @@ void QQuaternionFilterTask(void *parameters)
 				for (j = 0; j < 4; j++)
 					gyroMult[j] = gyroAccumulator[i * 4 + j];
 
-				multiplyQ(gyroMult, gyroQuaternion, gyroMult);
+				lerpQ(gyroMult, gyroQuaternion, gyroMult, GYRO_LERP_GAIN);
+
+				normalizeQ(gyroMult);
+
+				// store the most recent gyro reading
+				for (j = 0; j < 4; j++)
+					gyroAccumulator[i * 4 + j] = gyroQuaternion[j];
 
 				for (j = 0; j < 4; j++)
-					gyroAccumulator[i * 4 + j] = gyroMult[j];
+					InArray[i * 8 + j] = gyroMult[j];
 			}
-
-			for (j = 0; j < 4; j++)
-				InArray[i * 8 + j] = gyroAccumulator[j];
 		}
 
 		/*
@@ -472,6 +478,8 @@ void QSlerpTask(void *parameters)
 				qGyro[j] = InArray[i * 8 + j];
 				qCross[j] = InArray[i * 8 + j + 4];
 			}
+
+			normalizeQ(qGyro);
 
 			slerpQ(qGyro, qCross, qOut, GYRO_SLERP_GAIN);
 

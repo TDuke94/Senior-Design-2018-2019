@@ -159,7 +159,7 @@ void I2C_Task(void *parameters)
 		/*
 		 * enqueue, if failed, free the pointer so no leak occurs
 		 */
-		if (xQueueSend(outputQueue, &outputArray, (TickType_t) 5) != pdPASS)
+		if (xQueueSend(outputQueue, &outputArray, (TickType_t) 0) != pdPASS)
 			vPortFree(outputArray);
 
 		/*

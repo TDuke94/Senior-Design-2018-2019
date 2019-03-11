@@ -160,6 +160,7 @@ void multiplyQ(float *q1, float *q2, float *qReturn)
  */
 void conjugateQ(float *q, float *qConj)
 {
+	qConj[0] = q[0];
 	qConj[1] = -q[1];
 	qConj[2] = -q[2];
 	qConj[3] = -q[3];
@@ -280,6 +281,8 @@ void slerpQ(float *q1, float *q2, float *qReturn, float t)
  * lerpQ
  *
  * Linear Interpolation of Quaternions
+ *
+ * inherently safe for *= type operations
  *
  * Input:
  * 		q1: quaternion A

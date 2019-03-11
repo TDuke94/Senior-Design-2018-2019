@@ -46,8 +46,13 @@ either expressed or implied, of the FreeBSD Project*/
 #include "SPI_Manager.h"
 
 #define SPI_DEVICE		XPAR_XSPIPS_0_DEVICE_ID
+#define GPIO_DEVICE_ID	XPAR_GPIO_2_DEVICE_ID
+
 #define SEND_COUNT		IMU_COUNT * 16
 #define RECEIVE_COUNT	10
+
+#define CHANNEL 1
+#define SLAVE_SELECT	0xff
 
 /*
  * Helper Functions
@@ -59,13 +64,14 @@ void convertFloatToByte (float F, u8 * byte);
  * Global Variables
  */
 static XSpiPs 			SpiInstance;
+static XGpio			Gpio;
 
 u8 WriteBuffer[SEND_COUNT];
 u8 ReadBuffer[RECEIVE_COUNT];
 
 void SPI_Task (void * parameters)
 {
-	int DelayFlag, i, j, count;
+	int DelayFlag, i, j;
 
 	u8 byteBuffer[4];
 
@@ -91,8 +97,6 @@ void SPI_Task (void * parameters)
 	vPortFree(parameters);
 
 	DelayFlag = TRUE;
-
-	count = 0;
 
 	for (;;)
 	{
@@ -141,10 +145,11 @@ void SPI_Task (void * parameters)
 		/*
 		 * Perform SPI Write
 		 */
+
+		XGpio_DiscreteClear(&Gpio, CHANNEL, SLAVE_SELECT);
 		XSpiPs_SetSlaveSelect(&SpiInstance, 0x00);
 		XSpiPs_PolledTransfer(&SpiInstance, WriteBuffer, NULL, SEND_COUNT);
-
-		count++;
+		XGpio_DiscreteWrite(&Gpio, CHANNEL, SLAVE_SELECT);
 
 		vPortFree(InArray);
 	}
@@ -186,6 +191,17 @@ int SPI_Init (void)
 	XSpiPs_SetOptions(&SpiInstance, XSPIPS_MASTER_OPTION |  XSPIPS_FORCE_SSELECT_OPTION);
 
 	XSpiPs_SetClkPrescaler(&SpiInstance, XSPIPS_CLK_PRESCALE_256);
+
+	/*
+	 * Also, perform GPIO initialization, since that's how we're doing Slave Select
+	 */
+
+	Status = XGpio_Initialize(&Gpio, GPIO_DEVICE_ID);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	XGpio_SetDataDirection(&Gpio, CHANNEL, 0x00);
 
 	return XST_SUCCESS;
 }

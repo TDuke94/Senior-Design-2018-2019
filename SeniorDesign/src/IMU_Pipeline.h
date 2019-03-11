@@ -28,7 +28,8 @@
 // Global IMU Count Definition
 #define IMU_COUNT 1
 #define GYRO_RATE 1000.0
-#define GYRO_SLERP_GAIN 0.05
+#define GYRO_LERP_GAIN 0.5
+#define GYRO_SLERP_GAIN 0.5
 
 // Queue Data Set
 typedef struct QueueData
