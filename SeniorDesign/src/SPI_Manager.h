@@ -31,6 +31,7 @@
 #include "xparameters.h"	/* SDK generated parameters */
 #include "xspips.h"		    /* SPI device driver */
 #include "xgpio.h"			/* GPIO device driver */
+#include "MathLibrary.h"
 
 /*
  * Types defined for pipeline are in IMU_Pipeline

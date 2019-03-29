@@ -40,7 +40,7 @@ extern short mag_fsr;
  */
 void QMathSetupTask(void *parameters)
 {
-	int DelayFlag, i, j;
+	int DelayFlag, i, j, temp;
 
 	u8 *InBuffer;
 
@@ -119,6 +119,11 @@ void QMathSetupTask(void *parameters)
 				OutArray[i]->mag[j]		= (short) InBuffer[2 * j + 12 + (i * 18)] << 8 	| InBuffer[2 * j + 13 + (i * 18)];
 				// TIMESTAMP
 			}
+			// rearange mag
+			temp = OutArray[i]->mag[0];
+			OutArray[i]->mag[0] = OutArray[i]->mag[1];
+			OutArray[i]->mag[1] = temp;
+			OutArray[i]->mag[2] = -OutArray[i]->mag[2];
 		}
 
 		/*

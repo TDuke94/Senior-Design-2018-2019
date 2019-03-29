@@ -137,6 +137,12 @@ void I2C_Task(void *parameters)
 
 	for(;;)
 	{
+		if (uxQueueSpacesAvailable(outputQueue) == 0)
+		{
+			vTaskDelay(1);
+			continue;
+		}
+
 		/*
 		 * Verify Clear
 		 */

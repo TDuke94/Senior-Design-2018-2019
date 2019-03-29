@@ -91,7 +91,6 @@ static struct platform_data_s compass_pdata = {
 
 void main(void)
 {
-
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
     // Initialize I/O Pins
@@ -147,10 +146,13 @@ void IMU_Startup_Poll(void)
     unsigned char address, reg, accel_fsr, more;
     unsigned short gyro_rate, gyro_fsr, compass_fsr;
     int Status, i;
+    volatile int count;
     unsigned long timestamp;
 
+    short xMin, xMax, yMin, yMax, zMin, zMax, xCal, yCal, zCal;
+
     unsigned char timeArray[8];
-    unsigned char outArray[6];
+    unsigned char outArray[18];
     unsigned char inArray[5];
 
     IMU_Data output;
@@ -168,24 +170,71 @@ void IMU_Startup_Poll(void)
     mpu_get_accel_fsr(&accel_fsr);
     mpu_get_compass_fsr(&compass_fsr);
 
+    count = 0;
+
+    xMax = -1000;
+    yMax = -1000;
+    zMax = -1000;
+    xMin = 1000;
+    yMin = 1000;
+    zMin = 1000;
+
+    xCal = -10;
+    yCal = 4;
+    zCal = -28;
+
     while (1)
     {
-        mpu_get_accel_reg(output.gyro, NULL);
-        mpu_get_gyro_reg(output.accel, NULL);
+        mpu_get_accel_reg(output.accel, NULL);
+        mpu_get_gyro_reg(output.gyro, NULL);
         mpu_get_compass_reg(output.mag, &timestamp);
+
+        output.mag[0] += xCal;
+        output.mag[1] += yCal;
+        output.mag[2] += zCal;
+
+        /*
+         * Magentometer calibration code
+         *
+        if (abs(output.mag[0]) < 400 && abs(output.mag[1]) < 400 && abs(output.mag[2]) < 400)
+        {
+            if (xMax < output.mag[0])
+                xMax = output.mag[0];
+            if (xMin > output.mag[0])
+                xMin = output.mag[0];
+            if (yMax < output.mag[1])
+                yMax = output.mag[1];
+            if (yMin > output.mag[1])
+                yMin = output.mag[1];
+            if (zMax < output.mag[2])
+                zMax = output.mag[2];
+            if (zMin > output.mag[2])
+                zMin = output.mag[2];
+        }
+        */
 
         // next set of bytes is raw data from IMU
         for (i = 0; i < 3; i++)
         {
-            outArray[(2 * i)]       = output.gyro[i] >> 8;
-            outArray[(2 * i) + 1]   = (output.gyro[i] & 0xff);
-            outArray[(2 * i) + 6]   = output.accel[i] >> 8;
-            outArray[(2 * i) + 7]   = (output.accel[i] & 0xff);
-            outArray[(2 * i) + 12]  = output.mag[i] >> 8;
+            outArray[(2 * i)]       = (output.accel[i] & 0xff00) >> 8;
+            outArray[(2 * i) + 1]   = (output.accel[i] & 0x00ff);
+            outArray[(2 * i) + 6]   = (output.gyro[i] & 0xff00) >> 8;
+            outArray[(2 * i) + 7]   = (output.gyro[i] & 0xff);
+            outArray[(2 * i) + 12]  = (output.mag[i] & 0xff00) >> 8;
             outArray[(2 * i) + 13]  = (output.mag[i] & 0xff);
         }
 
         msp430_i2c_write(ZYNQ_ADDRESS, 0, 18, outArray);
+
+        if (count == 20)
+        {
+            count = 0;
+            continue;
+        }
+        else
+        {
+            count++;
+        }
 
         // check a status word
         //msp430_i2c_read(ZYNQ_ADDRESS, 0, 5, inArray);

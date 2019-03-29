@@ -32,6 +32,8 @@ void printError (void);
  * 		void
  */
 
+TaskHandle_t xI2CHandle;
+
 void dispatchPipeline(void)
 {
 	int STACK_SIZE = 400;
@@ -44,7 +46,7 @@ void dispatchPipeline(void)
 
 	BaseType_t xReturned;
 
-	TaskHandle_t xI2CHandle = NULL;
+	xI2CHandle = NULL;
 	TaskHandle_t xSetupHandle = NULL;
 	TaskHandle_t xVectQuatHandle = NULL;
 	TaskHandle_t xFilterHandle = NULL;
@@ -68,7 +70,7 @@ void dispatchPipeline(void)
 					"I2C",
 					STACK_SIZE,
 					(void *) Q_Data_1,
-					tskIDLE_PRIORITY + 1,
+					tskIDLE_PRIORITY + 2,
 					&xI2CHandle
 					);
 

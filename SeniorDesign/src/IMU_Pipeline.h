@@ -29,7 +29,7 @@
 #define IMU_COUNT 1
 #define GYRO_RATE 1000.0
 #define GYRO_LERP_GAIN 0.5
-#define GYRO_SLERP_GAIN 0.5
+#define GYRO_SLERP_GAIN 1.0
 
 // Queue Data Set
 typedef struct QueueData
