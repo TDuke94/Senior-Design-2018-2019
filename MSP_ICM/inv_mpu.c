@@ -32,9 +32,23 @@ enum UserBank
     USER_BANK_3,
 };
 
-int readMagRegisters(uint8_t subAddress, uint8_t count, uint8_t *dest);
+int inv_icm20948_setup_compass_akm(void);
+int inv_icm20948_suspend_akm(void);
+int inv_icm20948_resume_akm(void);
+int inv_icm20948_write_single_mems_reg(uint8_t reg, const unsigned char data);
+int inv_icm20948_read_secondary(int index, unsigned char addr, unsigned char reg, char len);
+int inv_icm20948_execute_read_secondary(int index, unsigned char addr, int reg, int len, uint8_t *d);
+int inv_icm20948_write_secondary(int index, unsigned char addr, unsigned char reg, char v);
+int inv_icm20948_execute_write_secondary(int index, unsigned char addr, int reg, uint8_t v);
+int inv_icm20948_secondary_stop_channel(int index);
+int inv_icm20948_secondary_enable_i2c(void);
+int inv_icm20948_secondary_disable_i2c(void);
+int inv_icm20948_read_mems_reg(uint8_t reg, unsigned int length, unsigned char *data);
+
+int readMagRegisters(short mag[3]);
 int changeUserBank(enum UserBank userBank);
 int writeMagRegister(uint8_t subAddress, uint8_t data);
+void i2c_Mag_Write(uint8_t reg, uint8_t value);
 
 // some useful things
 const uint8_t REG_BANK_SEL = 0x7F;
@@ -1575,14 +1589,18 @@ int changeUserBank(enum UserBank userBank)
             userBankRegValue = REG_BANK_SEL_USER_BANK_2;
             break;
         case USER_BANK_3:
-            userBankRegValue = REG_BANK_SEL_USER_BANK_3;
+            userBankRegValue = 0x30;
             break;
     }
 
     data = userBankRegValue;
 
-    if (i2c_write(st.hw->addr, REG_BANK_SEL, 1, &data) < 0)
+    if (i2c_write(st.hw->addr, REG_BANK_SEL, 1, &data))
         return -1;
+
+    if (i2c_read(st.hw->addr, REG_BANK_SEL,1, &data))
+        return -1;
+
     return 0;
 }
 
@@ -1590,10 +1608,8 @@ int writeMagRegister(uint8_t subAddress, uint8_t data)
 {
     unsigned char localData;
 
-    if (changeUserBank(USER_BANK_3) < 0)
-        return -1;
-
-    localData = MAG_AK09916_I2C_ADDR;
+    //localData = MAG_AK09916_I2C_ADDR;
+    localData = 0xC0;
 
     if (i2c_write(st.hw->addr, UB3_I2C_SLV0_ADDR, 1, &localData))
         return -2;
@@ -1621,37 +1637,56 @@ int writeMagRegister(uint8_t subAddress, uint8_t data)
     return 0;
 }
 
-int readMagRegisters(uint8_t subAddress, uint8_t count, uint8_t *dest)
+void configureBypass()
 {
-    int status;
+    unsigned char data, localReg;
+
+    data = 0x00;
+    localReg = 0x7F;
+    i2c_write(st.hw->addr, localReg, 1, &data);
+
+    data = 0x02;
+    localReg = 0x0F;
+    i2c_write(st.hw->addr, localReg, 1, &data);
+    delay_ms(1);
+}
+
+uint8_t ICM_Mag_Read(uint8_t reg)
+{
+    uint8_t data;
+    uint8_t localReg;
+
+    data = 0x01;
+    i2c_write(0x0C, 0x32, 1, &data);
+    delay_ms(10);
+
+    i2c_read(0x0C, 0x01, 1, &data);
+
+    return data;
+}
+
+int readMagRegisters(short mag[3])
+{
+    uint8_t buffer[10];
+
+    i2c_read(0x0C, 0x11, 6, buffer + 1);
+
+    mag[0] = (buffer[2] << 8) | buffer[1];
+}
+
+void i2c_Mag_Write(uint8_t reg, uint8_t value)
+{
     unsigned char data;
 
-    if (changeUserBank(USER_BANK_3) < 0)
-        return -1;
+    data = 0x30;
+    i2c_write(st.hw->addr, 0x7F, 1, &data);
+    data = 0x0C;
+    i2c_write(st.hw->addr, 0x03, 1, &data);
+    data = reg;
+    i2c_write(st.hw->addr, 0x04, 1, &data);
+    data = value;
+    i2c_write(st.hw->addr, 0x06, 1, &data);
 
-    // write to setup single read
-    writeMagRegister(0x0A, 0x01);
-
-    data = subAddress;
-
-    // set the register to the desired magnetometer sub address
-    if (i2c_write(st.hw->addr, UB3_I2C_SLV0_REG, 1, &data))
-        return -1;
-
-    data = UB3_I2C_SLV0_CTRL_EN | count;
-
-    // enable I2C and request the bytes
-    if (i2c_write(st.hw->addr, UB3_I2C_SLV0_CTRL, 1, &data))
-        return -4;
-
-    delay_ms(1); // takes some time for these registers to fill
-
-    // read the bytes off the ICM-20948 EXT_SLV_SENS_DATA registers
-    if (changeUserBank(USER_BANK_0) < 0)
-        return -5;
-
-    status = i2c_read(st.hw->addr, UB0_EXT_SLV_SENS_DATA_00, count, dest);
-    return status;
 }
 
 /**
@@ -3144,112 +3179,323 @@ int mpu_get_dmp_state(unsigned char *enabled)
 /* This initialization is similar to the one in ak8975.c. */
 static int setup_compass(void)
 {
-    unsigned char data[4], akm_addr;
+    unsigned char data[4], akm_addr, reg, localData;
+    static uint8_t lIsInited = 0;
 
-    //mpu_set_bypass(1);
-
-    /*
-     * The following code does not work - it fails to find the address, which is hard coded as 0x0C
-     */
-
-    /* Find compass. Possible addresses range from 0x0C to 0x0F. */
-    /*
-    for (akm_addr = 0x0C; akm_addr <= 0x0F; akm_addr++) {
-        int result;
-        result = i2c_read(akm_addr, AKM_REG_WHOAMI, 1, data);
-        if (!result && (data[0] == AKM_WHOAMI))
-            break;
-    }
-    */
     akm_addr = 0x0C;
-
-    if (akm_addr > 0x0F) {
-        /* TODO: Handle this case in all compass-related functions. */
-        log_e("Compass not found.\n");
-        return -1;
-    }
 
     st.chip_cfg.compass_addr = akm_addr;
 
-    data[0] = AKM_POWER_DOWN;
-    if (i2c_write(st.chip_cfg.compass_addr, AKM_REG_CNTL, 1, data))
-        return -1;
-    delay_ms(1);
+    /* Make sure that by default all channels are disabled
+    To not inherit from a previous configuration from a previous run*/
 
-    data[0] = AKM_FUSE_ROM_ACCESS;
-    if (i2c_write(st.chip_cfg.compass_addr, AKM_REG_CNTL, 1, data))
-        return -1;
-    delay_ms(1);
+    // change to user bank 3
+    reg = 0x7F;
+    localData = 0x30;
+    i2c_write(st.hw->addr, reg, 1, &localData);
 
-    /* Get sensitivity adjustment data from fuse ROM. */
-    if (i2c_read(st.chip_cfg.compass_addr, AKM_REG_ASAX, 3, data))
-        return -1;
-    st.chip_cfg.mag_sens_adj[0] = (long)data[0] + 128;
-    st.chip_cfg.mag_sens_adj[1] = (long)data[1] + 128;
-    st.chip_cfg.mag_sens_adj[2] = (long)data[2] + 128;
+    // write 0 to the i2c control registers
+    inv_icm20948_write_single_mems_reg(0x05, 0);
+    inv_icm20948_write_single_mems_reg(0x09, 0);
+    inv_icm20948_write_single_mems_reg(0x0D, 0);
+    inv_icm20948_write_single_mems_reg(0x11, 0);
 
-    data[0] = AKM_POWER_DOWN;
-    if (i2c_write(st.chip_cfg.compass_addr, AKM_REG_CNTL, 1, data))
-        return -1;
-    delay_ms(1);
+    // setup secondary i2c bus
+    // still in user bank 3
 
-    mpu_set_bypass(0);
+    if(lIsInited == 0) {
+        inv_icm20948_write_single_mems_reg(0x01, 0x10);
+        inv_icm20948_write_single_mems_reg(0x00, 0x04);
 
-    /* Set up master mode, master clock, and ES bit. */
-    data[0] = 0x40;
-    if (i2c_write(st.hw->addr, st.reg->i2c_mst, 1, data))
-        return -1;
+        lIsInited = 1;
+    }
 
-    /* Slave 0 reads from AKM data registers. */
-    data[0] = BIT_I2C_READ | st.chip_cfg.compass_addr;
-    if (i2c_write(st.hw->addr, st.reg->s0_addr, 1, data))
-        return -1;
+    inv_icm20948_execute_read_secondary(0x00, 0x0C, 0x00, 1, data);
 
-    /* Compass reads start at this register. */
-    data[0] = AKM_REG_ST1;
-    if (i2c_write(st.hw->addr, st.reg->s0_reg, 1, data))
-        return -1;
-
-    /* Enable slave 0, 8-byte reads. */
-    data[0] = BIT_SLAVE_EN | 8;
-    if (i2c_write(st.hw->addr, st.reg->s0_ctrl, 1, data))
-        return -1;
-
-    /* Slave 1 changes AKM measurement mode. */
-    data[0] = st.chip_cfg.compass_addr;
-    if (i2c_write(st.hw->addr, st.reg->s1_addr, 1, data))
-        return -1;
-
-    /* AKM measurement mode register. */
-    data[0] = AKM_REG_CNTL;
-    if (i2c_write(st.hw->addr, st.reg->s1_reg, 1, data))
-        return -1;
-
-    /* Enable slave 1, 1-byte writes. */
-    data[0] = BIT_SLAVE_EN | 1;
-    if (i2c_write(st.hw->addr, st.reg->s1_ctrl, 1, data))
-        return -1;
-
-    /* Set slave 1 data. */
-    data[0] = AKM_SINGLE_MEASUREMENT;
-    if (i2c_write(st.hw->addr, st.reg->s1_do, 1, data))
-        return -1;
-
-    /* Trigger slave 0 and slave 1 actions at each sample. */
-    data[0] = 0x03;
-    if (i2c_write(st.hw->addr, st.reg->i2c_delay_ctrl, 1, data))
-        return -1;
-
-#ifdef MPU9150
-    /* For the MPU9150, the auxiliary I2C bus needs to be set to VDD. */
-    data[0] = BIT_I2C_MST_VDDIO;
-    if (i2c_write(st.hw->addr, st.reg->yg_offs_tc, 1, data))
-        return -1;
-#endif
+    inv_icm20948_setup_compass_akm();
 
     return 0;
 }
 #endif
+
+int inv_icm20948_setup_compass_akm(void)
+{
+    /* Set compass in power down through I2C SLV for compass */
+    inv_icm20948_execute_write_secondary(0x00, 0x0C, 0x31, 0x00);
+
+    return inv_icm20948_suspend_akm();
+}
+
+int inv_icm20948_suspend_akm(void)
+{
+    int result;
+
+    /* slave 0 is disabled */
+    result = inv_icm20948_secondary_stop_channel(0x00);
+    /* slave 1 is disabled */
+    result |= inv_icm20948_secondary_stop_channel(0x01);
+
+    // Switch off I2C Interface as compass is alone
+    result |= inv_icm20948_secondary_disable_i2c();
+
+    return result;
+}
+
+int inv_icm20948_resume_akm(void)
+{
+    int result;
+    uint8_t reg_addr, bytes;
+    unsigned char lDataToWrite;
+
+    /* slave 0 is used to read data from compass */
+    /*read mode */
+    reg_addr = 0x10;
+    bytes = 9;
+    /* slave 0 is enabled, read 10 or 8 bytes from here depending on compass type, swap bytes to feed DMP */
+    result = inv_icm20948_read_secondary(0x00, 0x0C, reg_addr, 0x10 | 0x40 | bytes);
+    lDataToWrite = 0x01;
+
+    result = inv_icm20948_write_secondary(0x01, 0x0C, 0x31, lDataToWrite);
+
+    result |= inv_icm20948_secondary_enable_i2c();
+
+    return result;
+}
+
+int inv_icm20948_write_single_mems_reg(uint8_t reg, const unsigned char data)
+{
+    int result = 0;
+
+    result |= i2c_write(st.hw->addr, reg, 1, &data);
+
+    return result;
+}
+
+int inv_icm20948_read_secondary(int index, unsigned char addr, unsigned char reg, char len)
+{
+    int result = 0;
+    unsigned char data, slave_addr, slave_reg, slave_ctrl, localReg, localData;
+
+    // change to user bank 3
+    localReg = 0x7F;
+    localData = 0x30;
+    i2c_write(st.hw->addr, localReg, 1, &localData);
+
+    switch (index)
+    {
+    case 0:
+        slave_addr = 0x03;
+        slave_reg = 0x04;
+        slave_ctrl = 0x05;
+        break;
+    case 1:
+        slave_addr = 0x07;
+        slave_reg = 0x08;
+        slave_ctrl = 0x09;
+        break;
+    case 2:
+        slave_addr = 0x0B;
+        slave_reg = 0x0C;
+        slave_ctrl = 0x0D;
+        break;
+    case 3:
+        slave_addr = 0x0F;
+        slave_reg = 0x10;
+        slave_ctrl = 0x11;
+        break;
+    }
+
+    data = 0x80 | addr;
+    result |= inv_icm20948_write_single_mems_reg(slave_addr, data);
+
+    data = reg;
+    result |= inv_icm20948_write_single_mems_reg(slave_reg, data);
+
+    data = 0x80 | len;
+    result |= inv_icm20948_write_single_mems_reg(slave_ctrl, data);
+
+    return result;
+}
+
+int inv_icm20948_execute_read_secondary(int index, unsigned char addr, int reg, int len, uint8_t *d)
+{
+    int result = 0;
+
+    result |= inv_icm20948_read_secondary(index, addr, reg, len);
+
+    // a change to bank 0 happens in the next call
+
+    result |= inv_icm20948_secondary_enable_i2c();
+
+    delay_ms(60);
+
+    result |= inv_icm20948_secondary_disable_i2c();
+
+    // we should already be in user bank 0 for this next read
+
+    result |= inv_icm20948_read_mems_reg(0x3B, len, d);
+
+    // stop channel sets up user bank internally
+
+    result |= inv_icm20948_secondary_stop_channel(index);
+
+    return result;
+}
+
+int inv_icm20948_write_secondary(int index, unsigned char addr, unsigned char reg, char v)
+{
+    int result = 0;
+    unsigned char data, slave_addr, slave_reg, slave_ctrl, slave_d0, localReg, localData;
+
+    localReg = 0x7F;
+    localData = 0x30;
+    i2c_write(st.hw->addr, localReg, 1, &localData);
+
+    switch (index)
+    {
+    case 0:
+        slave_addr = 0x03;
+        slave_reg = 0x04;
+        slave_ctrl = 0x05;
+        slave_d0 = 0x06;
+        break;
+    case 1:
+        slave_addr = 0x07;
+        slave_reg = 0x08;
+        slave_ctrl = 0x09;
+        slave_d0 = 0x0A;
+        break;
+    case 2:
+        slave_addr = 0x0B;
+        slave_reg = 0x0C;
+        slave_ctrl = 0x0D;
+        slave_d0 = 0x0E;
+        break;
+    case 3:
+        slave_addr = 0x0F;
+        slave_reg = 0x10;
+        slave_ctrl = 0x11;
+        slave_d0 = 0x12;
+        break;
+    }
+
+    data = addr;
+    result |= inv_icm20948_write_single_mems_reg(slave_addr, data);
+
+    data = reg;
+    result |= inv_icm20948_write_single_mems_reg(slave_reg, data);
+
+    data = v;
+    result |= inv_icm20948_write_single_mems_reg(slave_d0, data);
+
+    data = 0x80 | 1;
+    result |= inv_icm20948_write_single_mems_reg(slave_ctrl, data);
+
+    return result;
+}
+
+int inv_icm20948_execute_write_secondary(int index, unsigned char addr, int reg, uint8_t v)
+{
+    int result = 0;
+
+    result |= inv_icm20948_write_secondary(index, addr, reg, v);
+
+    result |= inv_icm20948_secondary_enable_i2c();
+
+    delay_ms(60);
+
+    result |= inv_icm20948_secondary_disable_i2c();
+
+    result |= inv_icm20948_secondary_stop_channel(index);
+
+    return result;
+}
+
+int inv_icm20948_secondary_stop_channel(int index)
+{
+    unsigned char data, slave_ctrl, reg, localData;
+
+    // switch to user bank 3
+    reg = 0x7F;
+    localData = 0x30;
+    i2c_write(st.hw->addr, reg, 1, &localData);
+
+    switch (index)
+    {
+    case 0:
+        slave_ctrl = 0x05;
+        break;
+    case 1:
+        slave_ctrl = 0x09;
+        break;
+    case 2:
+        slave_ctrl = 0x0D;
+        break;
+    case 3:
+        slave_ctrl = 0x11;
+        break;
+    }
+    inv_icm20948_write_single_mems_reg(slave_ctrl, 0);
+}
+
+int inv_icm20948_secondary_enable_i2c(void)
+{
+    unsigned char reg, localData;
+
+    // change to user bank 0
+    reg = 0x7F;
+    localData = 0x00;
+    i2c_write(st.hw->addr, reg, 1, &localData);
+
+    // read from user control
+    inv_icm20948_read_mems_reg(0x03, 1, &localData);
+
+    // or value
+    localData |= 0x20;
+
+    // write to user control
+    inv_icm20948_write_single_mems_reg(0x03, localData);
+}
+
+int inv_icm20948_secondary_disable_i2c(void)
+{
+    unsigned char reg, localData;
+
+    // change to user bank 0
+    reg = 0x7F;
+    localData = 0x00;
+    i2c_write(st.hw->addr, reg, 1, &localData);
+
+    // read from user control
+    inv_icm20948_read_mems_reg(0x03, 1, &localData);
+
+    // or value
+    localData &= 0xDF;
+
+    // write to user control
+    inv_icm20948_write_single_mems_reg(0x03, localData);
+}
+
+int inv_icm20948_read_mems_reg(uint8_t reg, unsigned int length, unsigned char *data)
+{
+    int result = 0;
+    unsigned int bytesRead = 0;
+    unsigned char i; // max buffer length
+
+    while (bytesRead<length)
+    {
+        int thisLen = min(16, length-bytesRead);
+
+        i2c_read(st.hw->addr, reg + bytesRead, thisLen, &data[bytesRead]);
+
+        if (result)
+            return result;
+
+        bytesRead += thisLen;
+    }
+
+    return result;
+}
 
 /**
  *  @brief      Read raw compass data.
@@ -3259,16 +3505,24 @@ static int setup_compass(void)
  */
 int mpu_get_compass_reg(short *data, unsigned long *timestamp)
 {
-#ifdef AK89xx_SECONDARY
-    unsigned char tmp[6];
+    unsigned char tmp[9];
 
-    if (!(st.chip_cfg.sensors & INV_XYZ_COMPASS))
-        return -1;
+    unsigned char reg, localData;
 
-    unsigned char address = 0x03;
+    inv_icm20948_resume_akm();
+    inv_icm20948_suspend_akm();
 
-    readMagRegisters(address, 6, tmp);
+    delay_ms(10);
 
+    // switch to user bank 0
+    reg = 0x7F;
+    localData = 0x00;
+    i2c_write(st.hw->addr, reg, 1, &localData);
+
+    reg = 0x3B;
+    i2c_read(st.hw->addr, reg, 9, tmp);
+
+    // check the input data
 /*
 #ifdef AK89xx_BYPASS
     if (i2c_read(st.chip_cfg.compass_addr, AKM_REG_ST1, 8, tmp))
@@ -3282,21 +3536,6 @@ int mpu_get_compass_reg(short *data, unsigned long *timestamp)
 #endif
 */
 
-#if defined AK8975_SECONDARY
-    /* AK8975 doesn't have the overrun error bit. */
-    /*
-    if (!(tmp[0] & AKM_DATA_READY))
-        return -2;
-    if ((tmp[7] & AKM_OVERFLOW) || (tmp[7] & AKM_DATA_ERROR))
-        return -3;
-    */
-#elif defined AK8963_SECONDARY
-    /* AK8963 doesn't have the data read error bit. */
-    if (!(tmp[0] & AKM_DATA_READY) || (tmp[0] & AKM_DATA_OVERRUN))
-        return -2;
-    if (tmp[7] & AKM_OVERFLOW)
-        return -3;
-#endif
     data[0] = (tmp[2] << 8) | tmp[1];
     data[1] = (tmp[4] << 8) | tmp[3];
     data[2] = (tmp[6] << 8) | tmp[5];
@@ -3308,9 +3547,7 @@ int mpu_get_compass_reg(short *data, unsigned long *timestamp)
     if (timestamp)
         get_ms(timestamp);
     return 0;
-#else
-    return -1;
-#endif
+
 }
 
 /**

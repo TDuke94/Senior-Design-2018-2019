@@ -25,6 +25,8 @@
 #ifndef _MSP430_I2C_H_
 #define _MSP430_I2C_H_
 
+void configureBypass(void);
+
 /**
  *  @brief  Set up the I2C port and configure the MSP430 as the master.
  *  @return 0 if successful.

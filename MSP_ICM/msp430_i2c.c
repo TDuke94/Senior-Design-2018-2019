@@ -137,7 +137,7 @@ int msp430_i2c_enable(void)
 
     /* Set slave clock frequency to 400kHz. */
     msp430_get_smclk_freq(&smclk);
-    br = smclk / 400000L;
+    br = smclk / 100000L;
     BR0 = (unsigned char)(br & 0xFF);
     BR1 = (unsigned char)((br >> 8) & 0xFF);
 
