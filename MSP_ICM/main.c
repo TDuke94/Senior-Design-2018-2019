@@ -87,20 +87,28 @@ void main(void)
 void Pin_Init(void)
 {
     P3SEL |= (BIT1 | BIT0);
-    GPIO_setAsOutputPin(
-                GPIO_PORT_P1,
-                GPIO_PIN2
-        );
+    GPIO_setAsOutputPin
+    (
+        GPIO_PORT_P1,
+        GPIO_PIN2
+    );
+
+    GPIO_setAsOutputPin
+    (
+        GPIO_PORT_P6,
+        GPIO_PIN0 + GPIO_PIN1 + GPIO_PIN2 + GPIO_PIN3
+    );
 
     GPIO_setOutputHighOnPin(
         GPIO_PORT_P1,
         GPIO_PIN2
         );
 
-    GPIO_setAsPeripheralModuleFunctionInputPin(
+    GPIO_setAsPeripheralModuleFunctionInputPin
+    (
         GPIO_PORT_P4,
         GPIO_PIN0 + GPIO_PIN1 + GPIO_PIN2 + GPIO_PIN3
-        );
+    );
 }
 
 void SPI_Init(void)
@@ -139,7 +147,7 @@ volatile int goodCount = 0;
  */
 void IMU_Startup_Poll(void)
 {
-    unsigned char address;
+    unsigned char address, reg, data;
     unsigned short gyro_rate;
     volatile int Status, i, j, index;
     unsigned long timestamp;
@@ -159,13 +167,15 @@ void IMU_Startup_Poll(void)
 
     j = msp430_i2c_write(0x77, 0, 1, &address);
 
+
+
     Status = mpu_init(NULL);
 
     while (1)
     {
         pollIMU(&output, BOARD_INDEX);
 
-        pollIMU(&output, J2_INDEX);
+        //pollIMU(&output, J2_INDEX);
 
         if (output.accel[0] == 0 || output.accel[1] == 0 || output.accel[2] == 0)
             count++;
@@ -194,11 +204,11 @@ void IMU_Startup_Poll(void)
 
         address = 'A';
         sendByteSPI(address);
+        sendByteSPI(address);
 
-        sendShortSPI(gyro_rate);
-        sendShortSPI(gyro_rate);
-        sendShortSPI(gyro_rate);
-        sendShortSPI(gyro_rate);
+        sendShortSPI(output.accel[0]);
+        sendShortSPI(output.accel[1]);
+        sendShortSPI(output.accel[2]);
 
         GPIO_setOutputHighOnPin
         (
