@@ -68,6 +68,7 @@ static const esp_spp_role_t role_slave = ESP_SPP_ROLE_SLAVE;
 
 uint32_t handle;
 
+uint32_t writeAvailable;
 
 static void print_speed(void)
 {
@@ -85,7 +86,7 @@ static void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
 {
     char buf[1024];
     //char spp_data[256];
-   char spp_data[100];
+   uint8_t spp_data[100];
 	
 	
     switch (event) {
@@ -100,6 +101,7 @@ static void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
         ESP_LOGI(SPP_TAG, "ESP_SPP_DISCOVERY_COMP_EVT");
         break;
     case ESP_SPP_OPEN_EVT:
+		
         ESP_LOGI(SPP_TAG, "ESP_SPP_OPEN_EVT");
 
         break;
@@ -117,19 +119,19 @@ static void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
     case ESP_SPP_DATA_IND_EVT:
 #if (SPP_SHOW_MODE == SPP_SHOW_DATA)
 
-		if(3==3)  //param->data_ind.len > 2 &&
-		{
+	//	if(3==3)  //param->data_ind.len > 2 &&
+	//	{
 
 			for(int i = 0; i < 999; i++)
 				buf[i] = 'H';
 
 			esp_spp_write(param->write.handle, 1000, (uint8_t *)buf);
-        }
-        else {
-            esp_log_buffer_hex("",param->data_ind.data,param->data_ind.len);
+     //   }
+      //  else {
+       //     esp_log_buffer_hex("",param->data_ind.data,param->data_ind.len);
 			
 
-        }
+    //    }
 #else
         gettimeofday(&time_new, NULL);
         data_num += param->data_ind.len;
@@ -140,27 +142,21 @@ static void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
         break;
     case ESP_SPP_CONG_EVT:
         ESP_LOGI(SPP_TAG, "ESP_SPP_CONG_EVT");
+		if (param->cong.cong == 0)
+		{
+			spp_data[0] = 0;
+			spp_data[1] = 0;
+			esp_spp_write (param->cong.handle, 2, spp_data);
+		}
         break;
     case ESP_SPP_WRITE_EVT:
+		writeAvailable = TRUE;
         break;
     case ESP_SPP_SRV_OPEN_EVT:
         ESP_LOGI(SPP_TAG, "ESP_SPP_SRV_OPEN_EVT");
 		{
 			handle = param->open.handle;
-			//for(int i =0; i < 15 ; i++)
-			//{
-				// i want a flag here 
-			//if(flag == TRUE)
-			//{	
-			//	flag = FALSE;
-				
-			//	for(int i = 0; i < 999; i++)
-			//		buf[i] = 'H';
-			//	buf[99] = '\n';
-			//	esp_spp_write(param->write.handle, 24, (uint8_t *)receivedBuf);
-				//memset(buf, 0, sizeof(buf));
-
-			//}
+			writeAvailable = FALSE;
 		}
         break;
     default:
@@ -184,8 +180,12 @@ sending a transaction. As soon as the transaction is done, the line gets set low
 Pins in use. The SPI Master can use the GPIO mux, so feel free to change these if needed.
 */
 #define GPIO_HANDSHAKE 2
-#define GPIO_MOSI 12
 #define GPIO_MISO 13
+/////////////////////////////
+
+/* Real Setup Pins
+*/
+#define GPIO_MOSI 27
 #define GPIO_SCLK 15
 #define GPIO_CS 14
 
@@ -195,6 +195,7 @@ void app_main()
 {	
 	handle = NULL;
 	
+	writeAvailable = TRUE;
 	esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES) {
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -291,21 +292,35 @@ void app_main()
 		//printf("\ntim is suspect\n");
         
 		ret=spi_slave_transmit(HSPI_HOST, &t, portMAX_DELAY);
-
-		//recvbuf[0] = 'A';
+		//for(int i =0; i < 24;i++)
+		//recvbuf[i] = 'A';
+		
 		char outbuf[28];
 		
 		if (recvbuf[0] != 'A') continue;
-		sprintf(outbuf,"%s\n", recvbuf);
+		if (recvbuf[1] != 'A') continue;
+		printf("%x\t", recvbuf[0]);
+		printf("%x\t", recvbuf[1]);
+		printf("%x\t", recvbuf[2]);
+		printf("%x\t", recvbuf[3]);
+		printf("%x\t", recvbuf[4]);
+		printf("%x\t", recvbuf[5]);
+		printf("%x\t", recvbuf[6]);
+		printf("%x\t", recvbuf[7]);
+		printf("%x\n", recvbuf[8]);
+		sprintf(outbuf,"%s", recvbuf);
 		// we can remove the A now that we have the thing we expect.
 		
         //spi_slave_transmit does not return until the master has done a transmission, so by here we have sent our data and
         //received data from the master. Print it.
-        printf("%s\n", recvbuf);
-	   if(handle)
+       // printf("%s\n", recvbuf);
+		// fixed this by removing a watchdog time clock interrrupt. the bt connection stays on now.
+	  if(handle)
 	   {
-		   esp_spp_write(handle , 24, (uint8_t *)outbuf);
-		   //printf("getting stuffs\n");
+		  // while(writeAvailable != TRUE); // spin wait
+				esp_spp_write(handle , 28, (uint8_t *)recvbuf);
+		   
+		   printf("getting stuffs\n");
 	   }
         n++;
 		//else
