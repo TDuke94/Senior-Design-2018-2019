@@ -131,10 +131,11 @@ void SPI_Init(void)
     USCI_B_SPI_enable(USCI_B1_BASE);
 
     //Now with SPI signals initialized, reset slave
-    GPIO_setOutputLowOnPin(
+    GPIO_setOutputLowOnPin
+    (
         GPIO_PORT_P1,
         GPIO_PIN2
-        );
+    );
 }
 
 volatile int count = 0;
@@ -148,11 +149,9 @@ volatile int goodCount = 0;
 void IMU_Startup_Poll(void)
 {
     unsigned char address, reg, data;
-    unsigned short gyro_rate;
     volatile int Status, i, j, index;
-    unsigned long timestamp;
 
-    unsigned char outArray[6];
+    short xMin, xMax, yMin, yMax, zMin, zMax;
 
     IMU_Data output;
 
@@ -161,21 +160,41 @@ void IMU_Startup_Poll(void)
     j = msp430_i2c_write(0x77, 0, 1, &address);
 
     Status = mpu_init(NULL);
-    //if (Status) return;
+    if (Status) return;
 
     address = 0x04;
 
     j = msp430_i2c_write(0x77, 0, 1, &address);
 
+    //Status = mpu_init(NULL);
+    //if (Status) return;
 
-
-    Status = mpu_init(NULL);
+    xMax = -20000;
+    xMin = 20000;
+    yMax = -20000;
+    yMin = 20000;
+    zMax = -20000;
+    zMin = 20000;
 
     while (1)
     {
         pollIMU(&output, BOARD_INDEX);
+        pollIMU(&output, J2_INDEX);
 
-        //pollIMU(&output, J2_INDEX);
+        if (output.gyro[0] > xMax)
+            xMax = output.gyro[0];
+        if (output.gyro[0] < xMin)
+            xMin = output.gyro[0];
+
+        if (output.gyro[1] > yMax)
+            yMax = output.gyro[1];
+        if (output.gyro[1] < yMin)
+            yMin = output.gyro[1];
+
+        if (output.gyro[2] > zMax)
+            zMax = output.gyro[2];
+        if (output.gyro[2] < zMin)
+            zMin = output.gyro[2];
 
         if (output.accel[0] == 0 || output.accel[1] == 0 || output.accel[2] == 0)
             count++;
@@ -200,7 +219,7 @@ void IMU_Startup_Poll(void)
             GPIO_PIN2
         );
 
-        gyro_rate = 1250;
+        zMin = 1250;
 
         address = 'A';
         sendByteSPI(address);
@@ -209,6 +228,10 @@ void IMU_Startup_Poll(void)
         sendShortSPI(output.accel[0]);
         sendShortSPI(output.accel[1]);
         sendShortSPI(output.accel[2]);
+
+        sendShortSPI(output.gyro[0]);
+        sendShortSPI(output.gyro[1]);
+        sendShortSPI(output.gyro[2]);
 
         GPIO_setOutputHighOnPin
         (
