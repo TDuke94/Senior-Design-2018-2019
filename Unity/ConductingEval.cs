@@ -9,43 +9,19 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
-public class testing : MonoBehaviour 
+public class ConductingEval : MonoBehaviour 
 {
 	SerialPort sp = new SerialPort("\\\\.\\COM14", 115200);
 
-	// this is used internally to reference the joint objects more efficiently
-	private GameObject[,] fingerJoints = new GameObject[4,3];
-	
-	//public GameObject wrist - these are set in the editor
-	public GameObject indexFingerJoint1;
-	public GameObject indexFingerJoint2;
-	public GameObject indexFingerJoint3;
-	public GameObject middleFingerJoint1;
-	public GameObject middleFingerJoint2;
-	public GameObject middleFingerJoint3;
-	public GameObject ringFingerJoint1;
-	public GameObject ringFingerJoint2;
-	public GameObject ringFingerJoint3;
-	public GameObject pinkyFingerJoint1;
-	public GameObject pinkyFingerJoint2;
-	public GameObject pinkyFingerJoint3;
-	public GameObject thumbJoint1;
-	public GameObject thumbJoint2;
-	//public Dropdown fTest;
 	public Button passFailButton;
 	public Button feedBackButton;
-	//public Text enterText;
-	//public Button saveFileButton;
-	//public GameObject wrist;
-	//public Text enterText;
 	public Button back;
-	public Dropdown solDropdown;
-	public GameObject solObject;
+	public GameObject arm;
 
 	// constants: do not treat like varaibles please :D
 	private static int rollingAvg = 20;
-	private static int fingerCount = 4;
-	private static int IMUCount = 5;
+	private static int fingerCount = 0;
+	private static int IMUCount = 1;
 	private static int gravityCount = 60;
 
 	// internally used flags
@@ -60,9 +36,11 @@ public class testing : MonoBehaviour
 	private static float[] sum = new float[3];
 	private float[,] velocityAverage = new float[3, rollingAvg];
 	private static int accelAvgCount;
+
 	// we need a timeout here
 	private int timeoutCounter;
 	private int kinematicCounter;
+
 	// calibration gravity reference values
 	private float[] gravityCal = new float[IMUCount];
 	private float[,] gravityAverage = new float[IMUCount, gravityCount];
@@ -73,26 +51,24 @@ public class testing : MonoBehaviour
 	private float[,] accelRaw = new float[IMUCount,3];
 	private Vector3[] accelVectors = new Vector3[IMUCount];
 	private float[] magnitude = new float[IMUCount];
-	private float[] fingerCurl = new float[fingerCount]; // UPDATE THIS NUMBER TO FINGER COUNT
-	private float aPitch, aRoll;
 
 	// kinematic filter storage
 	private float[,] accelRawPrev = new float[IMUCount,3];
 	private float[] magnitudePrev = new float[IMUCount];
 
 	// evaluation results
-	private bool[] solfege = new bool[7];
-	private bool keyboard;
 	private static int debounce = 3;
 	private int dbCounter;
 	private bool lastState;
 	private bool[] dbArray = new bool[debounce];
-	
+	private static int times = 10;
+	private int timeIndex;
+	float [] deltaT =  new float[times];
+	float beatsPerMinute;
+	float lastTime;
 	// test variables - remove
 	private int test;
 	private int testDirection;
-	
-
 
 	// Use this for initialization
 	void Start ()
@@ -104,10 +80,15 @@ public class testing : MonoBehaviour
 		sp.ReadTimeout = 200;
 		
 		// having references to the joints and putting them in a 2D array
-		configHinges();
 
 		firstFlag = true;
 		
+		for(int i =0; i < times; i++)
+			deltaT[i] = 0.0f;
+
+		timeIndex = 0;
+		lastTime = Time.time;
+
 		// setup for rolling average
 		for(int i =0; i < 3; i++)
 		{
@@ -131,11 +112,6 @@ public class testing : MonoBehaviour
 
 		kinematicCounter = 0;
 
-		//keyboard posture was done correctly
-		
-		// initialze the pass fail button to nothing
-		//passFailButton.GetComponentInChildren<Text>().text = "";
-		
 		dbCounter = 0;
 
 		lastState = false;
@@ -148,32 +124,24 @@ public class testing : MonoBehaviour
 
 		feedBackButton.GetComponentInChildren<Text>().text = "Calibrating...";
 
-		// LOOK BACK HERE soon
+		// IN
+		//arm.transform.rotation =  Quaternion.Euler(0.0f, 5.0f,  -30.0f);
 		
+		// OUT
+		//arm.transform.rotation =  Quaternion.Euler(0.0f, 5.0f,  30.0f);
 
-	//	string  solfegeMotion = PlayerPrefs.GetString("dropdown", "No Name");
+		//Down
+		//arm.transform.rotation =  Quaternion.Euler(0.0f, 0.0f,  0.0f);
 
-		if (PlayerPrefs.GetString("keyboard") == "k")
-		{
-			solObject.SetActive(false);
-		//	solDropdown.Hide();
-		}
-
-
-	//	solDropdown.options[solDropdown.value].text = solfegeMotion;
+		//up
+		arm.transform.rotation =  Quaternion.Euler(0.0f, 17.0f,  0.0f);
 
 		back.onClick.AddListener(TaskOnClick);
-		
-	//	print(solfegeMotion);
 	}
 
 	// Update is called once per frame
 	void Update () 
 	{
-		//string updatedSolMotion = solDropdown.options[solDropdown.value].text;
-		int solfegeIndex = solDropdown.value;
-		print (solfegeIndex);
-		//print(updatedSolMotion);
 		// try openning the comm port we established in our start function
 		if(!sp.IsOpen) return;
 		
@@ -209,49 +177,64 @@ public class testing : MonoBehaviour
 			
 			accelRawToVector();
 
-			// calculating Pitch and Roll based on Raw Acceleration Data
-			aPitch = - Mathf.Atan2(-(float)accelRaw[accelIndex,1], (float)accelRaw[accelIndex,2]) * 180 / Mathf.PI;
-			aRoll = - Mathf.Atan2((float)accelRaw[accelIndex,0], (float)accelRaw[accelIndex,2]) * 180 / Mathf.PI;
-
 			// Rotation based on Roll and Pitch
 			float smooth = 0.0f; 
-			
-			calcFingerCurl();
 
-			Vector3 baselineG = new Vector3(accelRaw[1,0], accelRaw[1,1], accelRaw[1,2]);
+			Vector3 baselineG = new Vector3(accelRaw[0,0], accelRaw[0,1], accelRaw[0,2]);
 
 			baselineG.Normalize();
 
-			baselineG *= gravityCal[1];
+			baselineG *= gravityCal[0];
 
-			accelVectors[1] = accelVectors[1] - baselineG;
+			accelVectors[0] = accelVectors[0] - baselineG;
 
-			// this should be accelVectors[0]
-			calcVelocity(accelVectors[1]);
-
-			// perform evaluation functions
-			for (int i = 0; i < 7; i++)
-				solfege[i] = Solfege.Evaluate(i, aRoll, aPitch, fingerCurl);
-
-			keyboard = Keyboard.Evaluate(aRoll, aPitch, fingerCurl);
+			calcVelocity(accelVectors[0]);
 
 			testDirection = findDirection();
-
-			string selectedMotion = PlayerPrefs.GetString("keyboard");
-
-			if (selectedMotion == "k")
-			{
-				bool kbDisplay = booleanDebounce(keyboard);
-				booleanDisplay(kbDisplay);
-			}
-			else if (selectedMotion == "s")
-			{
-				bool solDisplay = booleanDebounce(solfege[solfegeIndex]);
-				booleanDisplay(solDisplay);
-			}
-
-			print(selectedMotion);
 			
+			float threshold = 3.0f;
+
+			if(testDirection != 0)
+			{
+				float currentTime = Time.time;
+				timeIndex++;
+				
+				float delta = currentTime - lastTime;
+
+				lastTime = currentTime;
+
+				if(timeIndex == times)
+					timeIndex = 0;
+
+				deltaT[timeIndex] = delta;
+				if(deltaT[timeIndex] > threshold)
+				{
+					for(int i = 0; i < times; i++)
+						deltaT[i] = 0.0f;
+				}
+
+				int count = 0;
+				float sum = 0.0f;
+
+				for(int i =0; i < times; i++)
+				{
+					if(deltaT[i] != 0)
+					{
+						sum+= deltaT[i];
+						count++;
+					}
+				}
+
+				float average = sum / count;
+
+				float beatsPerSecond = 1.0f / average;
+
+				beatsPerMinute = beatsPerSecond * 60.0f;
+
+			}
+			if(!float.IsNaN(beatsPerMinute))
+				feedBackButton.GetComponentInChildren<Text>().text = beatsPerMinute.ToString();
+
 			// data logging, very helpful :D
 			logData();
 		}
@@ -310,17 +293,11 @@ public class testing : MonoBehaviour
 			feedBackButton.GetComponentInChildren<Text>().text = "You are not within the boundaries.";
 
 		}
-			
 	}
 
 	void FixedUpdate()
 	{
-		Quaternion rotation = Quaternion.Euler(aRoll, aPitch, 0.0f);		
-		//GetComponent<Rigidbody>().MoveRotation(rotation);
-		GetComponent<Rigidbody>().MoveRotation(rotation);
-
-		for(int i = 0; i < 4; i++)
-			applyCurl(fingerCurl[i], i);
+		
 	}
 
 	 private bool parseAccel()
@@ -334,18 +311,11 @@ public class testing : MonoBehaviour
 		{
 			temp = (byte)sp.ReadByte();
 		} while (temp != 65);
-		
-		// gets rid of the second A character
-		//temp = (byte)sp.ReadByte();
-
-		if (temp != 65)
-			return false;
 
 		int frameSize = IMUCount * 4;
 		int frameBreakCount = 0;
 		for(int i = 0; i < frameSize ; i++)
 		{
-			
 			if (i % 4 == 0)
 			{
 				// remove the midpoint flags
@@ -356,7 +326,6 @@ public class testing : MonoBehaviour
 				frameBreakCount++;
 				continue;
 			}
-			
 
 			retval = false;
 			bytes[1] = (byte)sp.ReadByte();
@@ -378,7 +347,6 @@ public class testing : MonoBehaviour
 
 	private void calcMagnitude()
 	{
-	
 		for (int i = 0; i < IMUCount; i++)
 		{
 			float localSum = 0;
@@ -390,7 +358,6 @@ public class testing : MonoBehaviour
 
 	void TaskOnClick ()
 	{
-
         SceneManager.LoadScene(0);
 	}
 
@@ -521,63 +488,11 @@ public class testing : MonoBehaviour
 		for (int i = 0; i < IMUCount; i++)
 			accelVectors[i].Set(accelRaw[i,0], accelRaw[i,1], accelRaw[i,2]);
 	}
-
-	private void configHinges()
-	{
-
-		fingerJoints[0,0] = indexFingerJoint1;
-		fingerJoints[0,1] = indexFingerJoint2;
-		fingerJoints[0,2] = indexFingerJoint3;
-		fingerJoints[1,0] = middleFingerJoint1;
-		fingerJoints[1,1] = middleFingerJoint2;
-		fingerJoints[1,2] = middleFingerJoint3;
-		fingerJoints[2,0] = ringFingerJoint1;
-		fingerJoints[2,1] = ringFingerJoint2;
-		fingerJoints[2,2] = ringFingerJoint3;
-		fingerJoints[3,0] = pinkyFingerJoint1;
-		fingerJoints[3,1] = pinkyFingerJoint2;
-		fingerJoints[3,2] = pinkyFingerJoint3;
-	}
-	
-	private void setJoint(GameObject joint, float targetPosition)//JointLimits fingerLimit, JointSpring fingerSpring, )
-	{
-		HingeJoint hingeSpring = joint.gameObject.GetComponent<HingeJoint>();
-		JointSpring localSpring = hingeSpring.spring;
-		localSpring.targetPosition = targetPosition;
-
-		hingeSpring.spring = localSpring;
-	}
-
-	private void applyCurl(float curl, int index)
-	{
-		setJoint(fingerJoints[index,0], curl * 90.0f);
-		setJoint(fingerJoints[index,1], curl * 75.0f);
-		setJoint(fingerJoints[index,2], curl * 30.0f);
-	}
 	
 	private void OnApplicationQuit()
      {
          sp.Close();
      }
-
-	private void calcFingerCurl()
-	{
-		Vector2 reference = new Vector2 (accelVectors[0].y, accelVectors[0].z);
-		reference.Normalize();
-
-		for (int i = 0; i < fingerCount; i++)
-		{
-			Vector2 fingerVector = new Vector2 (accelVectors[i+1].y, accelVectors[i+1].z);
-			fingerVector.Normalize();
-
-			float fDot = Vector2.Dot(fingerVector, reference);
-			fDot = Mathf.Clamp(fDot, -1.0f, 1.0f);
-			
-			float fAngle = Mathf.Acos(fDot);
-
-			fingerCurl[i] = fAngle / Mathf.PI;
-		}
-	}
 
 	/*
 	 * Returns an encoded  Integer type if a motion is detected, otherwise nothing
@@ -593,8 +508,7 @@ public class testing : MonoBehaviour
 	 */
 	private int findDirection()
 	{
-		// index should be 0
-		int index = 1;
+		int index = 0;
 		int timeoutValue = 13;
 
 		if (timeoutCounter > 0)
@@ -646,103 +560,27 @@ public class testing : MonoBehaviour
 		return 0;
 	}
 
-
+	// this is a feature :D
 	private void logData()
 	{
 		string  filename = PlayerPrefs.GetString("filename", "No Name");
 		//StreamWriter writer = new StreamWriter("C:\\Users\\dgdan\\Desktop\\SeniorDesign\\MyWorkspace\\" + filename + ".csv", true);
-		//writer.WriteLine("this is a test,i,think,this,will,work");
-		//actually log stuff here
-		//writer.Close();
-		//Write some text to the csv file
-		//StreamWriter writer = new StreamWriter("C:\\Users\\dgdan\\Desktop\\SeniorDesign\\MyWorkspace\\TestData.csv", true);
-		StreamWriter writer = new StreamWriter("C:\\Users\\dgdan\\Desktop\\SeniorDesign\\MyWorkspace\\" + filename + ".csv", true);
-		//   writer.WriteLine(gyro[0].ToString() + ","  +  gyro[1].ToString() + "," + gyro[2].ToString());
+		StreamWriter writer = new StreamWriter("C:\\Users\\dgdan\\Desktop\\SeniorDesign\\MyWorkspace\\testData.csv", true);
+
 		writer.WriteLine (
 			accelRaw[0,0].ToString() + "," + accelRaw[0,1].ToString()+ "," + accelRaw[0,2].ToString()
 			+
-			"," + ","+
-			accelRaw[1,0].ToString() + "," + accelRaw[1,1].ToString()+ "," + accelRaw[1,2].ToString()
+			"," + "," 
 			+
-			"," + ","+
-			accelRaw[2,0].ToString() + "," + accelRaw[2,1].ToString()+ "," + accelRaw[2,2].ToString()
+			testDirection.ToString()
 			+
-			"," + ","+
-			accelRaw[3,0].ToString() + "," + accelRaw[3,1].ToString()+ "," + accelRaw[3,2].ToString()
+			"," + "," 
 			+
-			"," + ","+
-			accelRaw[4,0].ToString() + "," + accelRaw[4,1].ToString()+ "," + accelRaw[4,2].ToString()
-			+
-			"," + ","+
-			fingerCurl[0].ToString() + ","  + fingerCurl[1].ToString() + "," +  fingerCurl[2].ToString() + "," + fingerCurl[3].ToString()
-			+
-			"," + ","+
-			keyboard.ToString()
+			beatsPerMinute.ToString()
 			);
 		writer.Close();
 	}	
 
 }
 
-class Keyboard
-{
-	private static float correctPitch  = 0.0f;
-	private static float correctRoll   = 0.0f;
-	private static float[] correctCurl = {0.5f, 0.5f, 0.5f, 0.5f};
 
-	private static int fingerCount = 4;
-	private static float pitchTolerance = 10.0f;
-	private static float rollTolerance = 10.0f;
-	private static float curlTolerance = 0.20f;
-
-	public static bool Evaluate(float roll, float pitch ,float[] curl)
-	{
-		if(Mathf.Abs(roll - correctRoll) > rollTolerance)
-			return false;
-		if(Mathf.Abs(pitch - correctPitch) > pitchTolerance)
-			return false;
-		
-		for (int i = 0; i < fingerCount; i++)
-			if(Mathf.Abs(correctCurl[i] - curl[i]) > curlTolerance)
-				return false;
-		
-		return true;
-	}
-
-}
-
-
-class Solfege 
-{
-	private static float[] correctPitch = {0.0f, 35.0f, 0.0f, 0.0f, 0.0f, 5.0f, 35.0f};
-	private static float[] correctRoll =  {0.0f, 0.0f, 0.0f, -25.0f, 90.0f, 0.0f, 0.0f};
-	private static float[,] correctCurl	= {
-				{1.0f, 1.0f, 1.0f, 1.0f},
-				{0.0f, 0.0f, 0.0f, 0.0f},
-				{0.0f, 0.0f, 0.0f, 0.0f},
-				{0.8f, 0.8f, 0.8f, 0.8f},
-				{0.0f, 0.0f, 0.0f, 0.0f},
-				{0.45f, 0.45f, 0.45f, 0.45f},
-				{0.0f, 1.0f, 1.0f, 1.0f}
-				};
-
-	private static int fingerCount = 4;
-	private static float pitchTolerance = 10.0f;
-	private static float rollTolerance = 10.0f;
-	private static float curlTolerance = 0.25f;
-
-	// returns whether you passed or failed the motion
-	public static bool Evaluate(int index, float roll, float pitch ,float[] curl)
-	{
-		if(Mathf.Abs(roll - correctRoll[index]) > rollTolerance)
-			return false;
-		if(Mathf.Abs(pitch - correctPitch[index]) > pitchTolerance)
-			return false;
-		
-		for (int i = 0; i < fingerCount; i++)
-			if(Mathf.Abs(correctCurl[index,i] - curl[i]) > curlTolerance)
-				return false;
-		
-		return true;
-	}
-}
