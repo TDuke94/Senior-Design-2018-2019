@@ -18,6 +18,7 @@
 #include "inv_mpu.h"
 #include "msp430_interrupt.h"
 #include "usci_b_spi.h"
+#include "ICM20948.h"
 
 #ifndef NULL
 #define NULL 0
@@ -25,6 +26,8 @@
 
 #define SPICLK      500000
 #define MUX_ADDRESS 0x77
+#define IMU_ADDRESS 0x68
+#define COMPASS_ADDRESS 0x0C
 
 uint8_t transmitData = 0x00, receiveData = 0x00;
 
@@ -47,6 +50,9 @@ void sendByteSPI(uint8_t data);
 void shortToBytes(short in_s, unsigned char bytes[2]);
 void sendShortSPI(short input);
 void pollIMU(IMU_Data *data, int index);
+void setupTimer(void);
+void enableBypass(void);
+void testFunction(void);
 
 #define ACCEL_ON        (0x01)
 #define GYRO_ON         (0x02)
@@ -56,6 +62,13 @@ void pollIMU(IMU_Data *data, int index);
 
 #define BOARD_INDEX     3
 #define J2_INDEX        2
+#define J3_INDEX        1
+#define J4_INDEX        0
+#define J5_INDEX        6
+#define J6_INDEX        5
+
+unsigned char timerFlag;
+unsigned char flagCount;
 
 void main(void)
 {
@@ -68,6 +81,7 @@ void main(void)
     msp430_clock_init(20000000L, 2);
     msp430_i2c_enable();
     SPI_Init();
+    setupTimer();
 
     // Verify IMU Comm
     IMU_Startup_Poll();
@@ -77,6 +91,24 @@ void main(void)
     {
         // nothing for now
     }
+}
+
+void setupTimer(void)
+{
+    unsigned long smclk;
+    TA0CTL = TASSEL_2 | ID_3 | MC_1 | TACLR;
+    TA0CTL &= ~TAIFG;
+
+    timerFlag = 0;
+    flagCount = 0;
+
+    /*
+     * SMCLK = 20,000,000
+     * SMCLK / 8 = 2,500,000
+     */
+    TA0CCR0 = 8000;
+
+    TA0CTL |= TAIE;
 }
 
 /*
@@ -148,103 +180,117 @@ volatile int goodCount = 0;
  */
 void IMU_Startup_Poll(void)
 {
-    unsigned char address, reg, data;
+    unsigned char address, reg;
     volatile int Status, i, j, index;
 
-    short xMin, xMax, yMin, yMax, zMin, zMax;
+    IMU_Data output[5];
 
-    IMU_Data output;
-
-    address = 0x08;
-
-    j = msp430_i2c_write(0x77, 0, 1, &address);
-
+    // Initialize Board IMU
+    index = BOARD_INDEX;
+    reg = (1 << index);
+    msp430_i2c_write(MUX_ADDRESS, 0, 1, &reg);
     Status = mpu_init(NULL);
-    if (Status) return;
 
-    address = 0x04;
+    // Initialize J3 IMU
+    index = J3_INDEX;
+    reg = (1 << index);
+    msp430_i2c_write(MUX_ADDRESS, 0, 1, &reg);
+    Status = mpu_init(NULL);
 
-    j = msp430_i2c_write(0x77, 0, 1, &address);
+    // Initialize J4 IMU
+    index = J4_INDEX;
+    reg = (1 << index);
+    msp430_i2c_write(MUX_ADDRESS, 0, 1, &reg);
+    Status = mpu_init(NULL);
 
-    //Status = mpu_init(NULL);
-    //if (Status) return;
+    // Initialize J5 IMU
+    index = J5_INDEX;
+    reg = (1 << index);
+    msp430_i2c_write(MUX_ADDRESS, 0, 1, &reg);
+    Status = mpu_init(NULL);
 
-    xMax = -20000;
-    xMin = 20000;
-    yMax = -20000;
-    yMin = 20000;
-    zMax = -20000;
-    zMin = 20000;
+    // Initialize J6 IMU
+    index = J6_INDEX;
+    reg = (1 << index);
+    msp430_i2c_write(MUX_ADDRESS, 0, 1, &reg);
+    Status = mpu_init(NULL);
+
+    _enable_interrupts();
 
     while (1)
     {
-        pollIMU(&output, BOARD_INDEX);
-        pollIMU(&output, J2_INDEX);
+        while (timerFlag == 0); // wait
 
-        if (output.gyro[0] > xMax)
-            xMax = output.gyro[0];
-        if (output.gyro[0] < xMin)
-            xMin = output.gyro[0];
+        timerFlag = 0;
 
-        if (output.gyro[1] > yMax)
-            yMax = output.gyro[1];
-        if (output.gyro[1] < yMin)
-            yMin = output.gyro[1];
-
-        if (output.gyro[2] > zMax)
-            zMax = output.gyro[2];
-        if (output.gyro[2] < zMin)
-            zMin = output.gyro[2];
-
-        if (output.accel[0] == 0 || output.accel[1] == 0 || output.accel[2] == 0)
-            count++;
-        else
-            goodCount++;
-
-        // next set of bytes is raw data from IMU
-        /*for (i = 0; i < 3; i++)
-        {
-            outArray[(2 * i)]       = output.gyro[i] >> 8;
-            outArray[(2 * i) + 1]   = (output.gyro[i] & 0xff);
-            outArray[(2 * i) + 6]   = output.accel[i] >> 8;
-            outArray[(2 * i) + 7]   = (output.accel[i] & 0xff);
-            outArray[(2 * i) + 12]  = output.mag[i] >> 8;
-            outArray[(2 * i) + 13]  = (output.mag[i] & 0xff);
-        }*/
-
-        // Transmit over SPI
-        GPIO_setOutputLowOnPin
-        (
-            GPIO_PORT_P1,
-            GPIO_PIN2
-        );
-
-        zMin = 1250;
+        pollIMU(output, BOARD_INDEX);
+        //pollIMU(output + 1, J2_INDEX);
+        // :'(
+        pollIMU(output + 1, J3_INDEX);
+        pollIMU(output + 2, J4_INDEX);
+        pollIMU(output + 3, J5_INDEX);
+        pollIMU(output + 4, J6_INDEX);
 
         address = 'A';
         sendByteSPI(address);
+
         sendByteSPI(address);
+        sendShortSPI(output[0].accel[0]);
+        sendShortSPI(output[0].accel[1]);
+        sendShortSPI(output[0].accel[2]);
 
-        sendShortSPI(output.accel[0]);
-        sendShortSPI(output.accel[1]);
-        sendShortSPI(output.accel[2]);
+        sendByteSPI(address);
+        sendShortSPI(output[1].accel[0]);
+        sendShortSPI(output[1].accel[1]);
+        sendShortSPI(output[1].accel[2]);
 
-        sendShortSPI(output.gyro[0]);
-        sendShortSPI(output.gyro[1]);
-        sendShortSPI(output.gyro[2]);
+        sendByteSPI(address);
+        sendShortSPI(output[2].accel[0]);
+        sendShortSPI(output[2].accel[1]);
+        sendShortSPI(output[2].accel[2]);
 
-        GPIO_setOutputHighOnPin
-        (
-            GPIO_PORT_P1,
-            GPIO_PIN2
-        );
+        sendByteSPI(address);
+        sendShortSPI(output[3].accel[0]);
+        sendShortSPI(output[3].accel[1]);
+        sendShortSPI(output[3].accel[2]);
 
-        if(0 >= SLAVE_NUMBER)
-        {
-            // We have spoken to all of the IMUs
-            break;
-        }
+        sendByteSPI(address);
+        sendShortSPI(output[4].accel[0]);
+        sendShortSPI(output[4].accel[1]);
+        sendShortSPI(output[4].accel[2]);
     }
+}
+
+void testFunction(void)
+{
+
+}
+
+void enableBypass(void)
+{
+    int index;
+
+    unsigned char reg;
+
+    // change multiplexer
+    index = 2;
+    reg = (1 << index);
+    msp430_i2c_write(MUX_ADDRESS, 0, 1, &reg);
+
+    // set IMU into Bypass I2C mode
+
+    // verify user bank is 0
+    reg = 0x00;
+    msp430_i2c_write(IMU_ADDRESS, 0x7F, 1, &reg);
+    msp430_delay_ms(10);
+
+    // set bypass_en - reg: 0x0f, value 0x02
+    reg = 0x02;
+    msp430_i2c_write(IMU_ADDRESS, 0x0f, 1, &reg);
+
+    // set i2c master enable OFF - bank: 0, reg: 0x03, value: 0x00
+    reg = 0x00;
+    msp430_i2c_write(IMU_ADDRESS, 0x03, 1, &reg);
 }
 
 /*
@@ -316,4 +362,16 @@ void USCI_B1_ISR (void)
 
         default: break;
     }
+}
+
+#pragma vector=TIMER0_A1_VECTOR
+__interrupt void TIMERA0_ISR (void)
+{
+    flagCount++;
+    if (flagCount == 2)
+    {
+        flagCount = 0;
+        timerFlag = 1;
+    }
+    TA0CTL &= ~TAIFG;
 }
